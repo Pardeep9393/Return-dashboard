@@ -9,7 +9,6 @@
 :root{--bg:#0d1117;--s1:#161b22;--s2:#1c2128;--bd:#30363d;--ac:#f97316;--gr:#22c55e;--rd:#ef4444;--yw:#eab308;--bl:#3b82f6;--pu:#a855f7;--tx:#e6edf3;--t2:#8b949e;--t3:#6e7681;}
 *{margin:0;padding:0;box-sizing:border-box;}
 body{background:var(--bg);color:var(--tx);font-family:'Inter',sans-serif;min-height:100vh;}
-/* HEADER */
 .hdr{background:var(--s1);border-bottom:1px solid var(--bd);padding:14px 24px;display:flex;align-items:center;justify-content:space-between;position:sticky;top:0;z-index:100;}
 .hdr-l{display:flex;align-items:center;gap:12px;}
 .logo{width:34px;height:34px;background:linear-gradient(135deg,#f97316,#c2410c);border-radius:8px;display:flex;align-items:center;justify-content:center;font-size:16px;}
@@ -21,11 +20,10 @@ body{background:var(--bg);color:var(--tx);font-family:'Inter',sans-serif;min-hei
 .dot{width:8px;height:8px;background:var(--gr);border-radius:50%;animation:pulse 2s infinite;}
 @keyframes pulse{0%,100%{opacity:1}50%{opacity:.3}}
 .ts{font-size:11px;color:var(--t3);}
-/* MAIN */
 .main{padding:20px 24px;max-width:1600px;margin:0 auto;}
 /* CONFIG */
 .cfg{background:var(--s1);border:1px solid var(--bd);border-radius:10px;padding:16px 20px;margin-bottom:20px;}
-.cfg-hdr{display:flex;align-items:center;justify-content:space-between;margin-bottom:0;}
+.cfg-hdr{display:flex;align-items:center;justify-content:space-between;}
 .cfg-hdr h2{font-size:13px;font-weight:600;}
 .cfg-body{margin-top:14px;}
 .cfg-note{font-size:12px;color:var(--t2);margin-bottom:10px;}
@@ -38,38 +36,52 @@ body{background:var(--bg);color:var(--tx);font-family:'Inter',sans-serif;min-hei
 .abtn-s{background:var(--s2);border:1px solid var(--bd);color:var(--tx);}
 .abtn-p{background:var(--ac);border:none;color:#fff;}
 .abtn-p:hover{background:#fb923c;}
-/* ERROR BANNER */
+/* ERROR */
 .err-banner{display:none;background:rgba(239,68,68,.08);border:1px solid rgba(239,68,68,.4);border-radius:10px;padding:14px 18px;margin-bottom:18px;font-size:12px;line-height:1.7;}
-/* KPI */
-.kpi-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(160px,1fr));gap:12px;margin-bottom:20px;}
+/* KPI — 5 cards */
+.kpi-grid{display:grid;grid-template-columns:repeat(5,1fr);gap:12px;margin-bottom:20px;}
+@media(max-width:900px){.kpi-grid{grid-template-columns:repeat(3,1fr);}}
+@media(max-width:600px){.kpi-grid{grid-template-columns:repeat(2,1fr);}}
 .kpi{background:var(--s1);border:1px solid var(--bd);border-radius:10px;padding:16px;position:relative;overflow:hidden;}
 .kpi::before{content:'';position:absolute;top:0;left:0;right:0;height:2px;}
-.kpi.or::before{background:var(--ac)}.kpi.gr::before{background:var(--gr)}.kpi.rd::before{background:var(--rd)}.kpi.yw::before{background:var(--yw)}.kpi.bl::before{background:var(--bl)}.kpi.pu::before{background:var(--pu)}
+.kpi.or::before{background:var(--ac)}.kpi.gr::before{background:var(--gr)}.kpi.rd::before{background:var(--rd)}.kpi.yw::before{background:var(--yw)}.kpi.pu::before{background:var(--pu)}
 .kpi-lbl{font-size:10px;color:var(--t2);text-transform:uppercase;letter-spacing:.5px;margin-bottom:6px;}
 .kpi-val{font-size:26px;font-weight:700;letter-spacing:-1px;font-family:'JetBrains Mono',monospace;}
 .kpi-sub{font-size:10px;color:var(--t3);margin-top:3px;}
-.kpi.or .kpi-val{color:var(--ac)}.kpi.gr .kpi-val{color:var(--gr)}.kpi.rd .kpi-val{color:var(--rd)}.kpi.yw .kpi-val{color:var(--yw)}.kpi.bl .kpi-val{color:var(--bl)}.kpi.pu .kpi-val{color:var(--pu)}
-/* CHARTS */
-.charts{display:grid;grid-template-columns:1fr 1fr 1fr;gap:12px;margin-bottom:20px;}
-@media(max-width:1000px){.charts{grid-template-columns:1fr 1fr;}}
+.kpi.or .kpi-val{color:var(--ac)}.kpi.gr .kpi-val{color:var(--gr)}.kpi.rd .kpi-val{color:var(--rd)}.kpi.yw .kpi-val{color:var(--yw)}.kpi.pu .kpi-val{color:var(--pu)}
+/* CHARTS — 3 columns: client bar | donut | day-wise (wide) */
+.charts{display:grid;grid-template-columns:1fr 1fr 2fr;gap:12px;margin-bottom:20px;}
+@media(max-width:1100px){.charts{grid-template-columns:1fr 1fr;}}
 @media(max-width:600px){.charts{grid-template-columns:1fr;}}
 .chart-card{background:var(--s1);border:1px solid var(--bd);border-radius:10px;padding:16px;}
-.chart-title{font-size:12px;font-weight:600;color:var(--t2);margin-bottom:12px;}
+.chart-title{font-size:12px;font-weight:600;color:var(--t2);margin-bottom:12px;display:flex;align-items:center;justify-content:space-between;}
+/* Client bar */
 .brow{display:flex;align-items:center;gap:8px;margin-bottom:6px;}
 .blbl{font-size:11px;color:var(--t2);width:80px;text-align:right;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;flex-shrink:0;}
 .btrack{flex:1;background:var(--s2);border-radius:3px;height:18px;overflow:hidden;}
 .bfill{height:100%;border-radius:3px;display:flex;align-items:center;padding-left:6px;transition:width .5s;}
 .bcnt{font-size:10px;font-weight:600;color:#fff;font-family:'JetBrains Mono',monospace;}
+/* Donut */
 .donut-wrap{display:flex;align-items:center;gap:14px;}
 .dlegend{display:flex;flex-direction:column;gap:6px;}
 .ditem{display:flex;align-items:center;gap:6px;font-size:11px;}
 .ddot{width:9px;height:9px;border-radius:3px;flex-shrink:0;}
-.abands{display:flex;gap:5px;height:55px;align-items:flex-end;margin-bottom:6px;}
-.abar{flex:1;border-radius:3px 3px 0 0;display:flex;align-items:flex-end;justify-content:center;padding-bottom:3px;font-size:10px;font-weight:600;color:#fff;min-height:4px;}
-.albls{display:flex;gap:5px;}
-.albl{flex:1;text-align:center;font-size:10px;color:var(--t3);}
+/* Day-wise grouped bar chart */
+.daychart-wrap{overflow-x:auto;}
+.daychart{display:flex;gap:6px;align-items:flex-end;min-height:120px;padding-bottom:28px;position:relative;}
+.day-group{display:flex;flex-direction:column;align-items:center;gap:2px;flex:1;min-width:38px;}
+.day-bars{display:flex;gap:2px;align-items:flex-end;width:100%;}
+.day-bar{flex:1;border-radius:3px 3px 0 0;min-height:3px;position:relative;cursor:default;transition:opacity .2s;}
+.day-bar:hover{opacity:.8;}
+.day-lbl{font-size:9px;color:var(--t3);text-align:center;margin-top:4px;white-space:nowrap;}
+.day-legend{display:flex;gap:14px;margin-bottom:10px;}
+.dl-item{display:flex;align-items:center;gap:5px;font-size:11px;color:var(--t2);}
+.dl-dot{width:10px;height:10px;border-radius:2px;}
+/* Tooltip */
+.tip{position:absolute;background:#0d1117;border:1px solid var(--bd);border-radius:6px;padding:6px 10px;font-size:11px;color:var(--tx);pointer-events:none;white-space:nowrap;z-index:999;display:none;box-shadow:0 4px 12px rgba(0,0,0,.5);}
 /* FILTERS */
 .fbar{background:var(--s1);border:1px solid var(--bd);border-radius:10px;padding:12px 16px;margin-bottom:18px;display:flex;gap:10px;flex-wrap:wrap;align-items:flex-end;}
+.fbar.has-filter{border-color:var(--ac);box-shadow:0 0 0 1px rgba(249,115,22,.2);}
 .fg{display:flex;flex-direction:column;gap:3px;}
 .flbl{font-size:10px;color:var(--t3);text-transform:uppercase;letter-spacing:.5px;}
 .fg select,.fg input[type=date]{background:var(--s2);border:1px solid var(--bd);border-radius:6px;padding:5px 8px;color:var(--tx);font-size:12px;min-width:120px;cursor:pointer;}
@@ -119,7 +131,6 @@ tbody td{padding:8px 12px;white-space:nowrap;}
 </style>
 </head>
 <body>
-
 <div class="hdr">
   <div class="hdr-l">
     <div class="logo">📦</div>
@@ -134,9 +145,7 @@ tbody td{padding:8px 12px;white-space:nowrap;}
     <button class="btn" onclick="fetchAll()">↻ Refresh</button>
   </div>
 </div>
-
 <div class="main">
-
   <!-- CONFIG -->
   <div class="cfg">
     <div class="cfg-hdr">
@@ -153,27 +162,33 @@ tbody td{padding:8px 12px;white-space:nowrap;}
       </div>
     </div>
   </div>
-
   <!-- ERROR BANNER -->
   <div class="err-banner" id="errBanner"></div>
-
-  <!-- KPI -->
+  <!-- KPI — 5 cards (Avg Ageing removed) -->
   <div class="kpi-grid">
-    <div class="kpi or"><div class="kpi-lbl">Total Received</div><div class="kpi-val" id="kTotal">—</div><div class="kpi-sub">All clients</div></div>
+    <div class="kpi or"><div class="kpi-lbl">Total Received</div><div class="kpi-val" id="kTotal">—</div><div class="kpi-sub" id="kTotalSub">All clients</div></div>
     <div class="kpi gr"><div class="kpi-lbl">Processed</div><div class="kpi-val" id="kProc">—</div><div class="kpi-sub" id="kProcP"></div></div>
     <div class="kpi rd"><div class="kpi-lbl">Pending / Open</div><div class="kpi-val" id="kPend">—</div><div class="kpi-sub" id="kPendP"></div></div>
     <div class="kpi yw"><div class="kpi-lbl">SLA Breach</div><div class="kpi-val" id="kBrch">—</div><div class="kpi-sub">Ageing &gt; 2 days</div></div>
-    <div class="kpi bl"><div class="kpi-lbl">Avg Ageing</div><div class="kpi-val" id="kAge">—</div><div class="kpi-sub">Days average</div></div>
-    <div class="kpi pu"><div class="kpi-lbl">Clients</div><div class="kpi-val" id="kCli">—</div><div class="kpi-sub">Active sources</div></div>
+    <div class="kpi pu"><div class="kpi-lbl">Clients</div><div class="kpi-val" id="kCli">—</div><div class="kpi-sub" id="kCliSub">Active sources</div></div>
   </div>
-
   <!-- CHARTS -->
   <div class="charts">
     <div class="chart-card"><div class="chart-title">Returns by Client</div><div id="cliBar"></div></div>
     <div class="chart-card"><div class="chart-title">Status Distribution</div><div class="donut-wrap"><svg width="100" height="100" id="donutSvg"></svg><div class="dlegend" id="donutLeg"></div></div></div>
-    <div class="chart-card"><div class="chart-title">Ageing Bands (Days)</div><div class="abands" id="ageBands"></div><div class="albls" id="ageLbls"></div></div>
+    <!-- Day-wise Received vs Processed (wide card) -->
+    <div class="chart-card" id="dayCard">
+      <div class="chart-title">
+        <span>Day-wise: Received vs Processed</span>
+        <span id="dayRange" style="font-size:10px;font-weight:400;color:var(--t3);"></span>
+      </div>
+      <div class="day-legend">
+        <div class="dl-item"><div class="dl-dot" style="background:var(--ac)"></div>Received</div>
+        <div class="dl-item"><div class="dl-dot" style="background:var(--gr)"></div>Processed</div>
+      </div>
+      <div class="daychart-wrap"><div class="daychart" id="dayChart"></div></div>
+    </div>
   </div>
-
   <!-- FILTERS -->
   <div class="fbar" id="fbar">
     <div class="fg"><div class="flbl">Client</div><select id="fCli" onchange="applyF()"><option value="">All Clients</option></select></div>
@@ -185,7 +200,6 @@ tbody td{padding:8px 12px;white-space:nowrap;}
     <button class="cbtn" onclick="clearF()">✕ Clear</button>
     <span class="rcnt" id="rcnt"></span>
   </div>
-
   <!-- TABLE -->
   <div class="tcard">
     <div class="tbar"><h2>Return AWB Detail</h2><button class="btn" onclick="exportCSV()">⬇ Export CSV</button></div>
@@ -194,7 +208,6 @@ tbody td{padding:8px 12px;white-space:nowrap;}
     </div>
     <div class="pgn" id="pgn" style="display:none;"></div>
   </div>
-
   <!-- CLIENT SUMMARY -->
   <div class="tcard">
     <div class="tbar"><h2>Client-wise Summary</h2></div>
@@ -205,14 +218,14 @@ tbody td{padding:8px 12px;white-space:nowrap;}
       </table>
     </div>
   </div>
-
 </div>
+<!-- Tooltip -->
+<div class="tip" id="tip"></div>
 
 <script>
 const TAB = "B2C Return AWB Wise Data Recv VS Process";
 const PG = 100;
 const CLRS = ['#f97316','#3b82f6','#22c55e','#a855f7','#eab308','#ef4444','#06b6d4','#ec4899','#84cc16','#f59e0b','#8b5cf6','#10b981','#f43f5e','#0ea5e9','#d97706'];
-
 let allData = [];
 let filtered = [];
 let page = 1;
@@ -227,237 +240,275 @@ function initSrc() {
   document.getElementById('srcCount').textContent = `(${sources.length})`;
 }
 function renderSrc() {
-  const el = document.getElementById('slist');
-  el.innerHTML = '';
+  const el = document.getElementById('slist'); el.innerHTML = '';
   sources.forEach((s,i) => {
-    const d = document.createElement('div');
-    d.className = 'srow';
+    const d = document.createElement('div'); d.className = 'srow';
     d.innerHTML = `<input type="text" placeholder="Sheet ID" value="${s.id}" oninput="sources[${i}].id=this.value">
       <input type="text" placeholder="Client Name" value="${s.lbl}" oninput="sources[${i}].lbl=this.value">
       <button class="delbtn" onclick="delRow(${i})">✕</button>`;
     el.appendChild(d);
   });
 }
-function addRow() { sources.push({id:'',lbl:''}); renderSrc(); }
-function delRow(i) { sources.splice(i,1); renderSrc(); }
-function toggleCfg() {
-  const b = document.getElementById('cfgBody');
-  b.style.display = b.style.display === 'none' ? 'block' : 'none';
+function addRow(){ sources.push({id:'',lbl:''}); renderSrc(); }
+function delRow(i){ sources.splice(i,1); renderSrc(); }
+function toggleCfg(){
+  const b=document.getElementById('cfgBody');
+  b.style.display=b.style.display==='none'?'block':'none';
 }
-function saveLoad() {
-  sources = sources.filter(s => s.id.trim());
-  localStorage.setItem('b2c_v2', JSON.stringify(sources));
-  document.getElementById('srcCount').textContent = `(${sources.length})`;
-  renderSrc();
-  fetchAll();
+function saveLoad(){
+  sources=sources.filter(s=>s.id.trim());
+  localStorage.setItem('b2c_v2',JSON.stringify(sources));
+  document.getElementById('srcCount').textContent=`(${sources.length})`;
+  renderSrc(); fetchAll();
 }
 
 // ── FETCH ──
-async function fetchAll() {
-  const tw = document.getElementById('twrap');
-  tw.innerHTML = `<div class="loading"><div class="spin"></div><div class="ltxt" id="ltxt">Loading…</div><div class="pbw"><div class="pb" id="pb" style="width:0%"></div></div></div>`;
-  document.getElementById('pgn').style.display = 'none';
-
-  allData = [];
-  const errs = [];
-  const valid = sources.filter(s => s.id.trim());
-
-  if (!valid.length) {
-    tw.innerHTML = `<div class="empty"><div class="ico">⚙️</div><p>Koi sheet add nahi ki. Upar "Edit Sources" mein Sheet ID dalo.</p></div>`;
+async function fetchAll(){
+  const tw=document.getElementById('twrap');
+  tw.innerHTML=`<div class="loading"><div class="spin"></div><div class="ltxt" id="ltxt">Loading…</div><div class="pbw"><div class="pb" id="pb" style="width:0%"></div></div></div>`;
+  document.getElementById('pgn').style.display='none';
+  allData=[];
+  const errs=[];
+  const valid=sources.filter(s=>s.id.trim());
+  if(!valid.length){
+    tw.innerHTML=`<div class="empty"><div class="ico">⚙️</div><p>Koi sheet add nahi ki. Upar "Edit Sources" mein Sheet ID dalo.</p></div>`;
     return;
   }
-
-  for (let i = 0; i < valid.length; i++) {
-    const s = valid[i];
-    document.getElementById('pb').style.width = ((i/valid.length)*100) + '%';
-    document.getElementById('ltxt').textContent = `Fetching: ${s.lbl} (${i+1}/${valid.length})`;
-    try {
-      const rows = await fetchSheet(s.id, s.lbl || `Client ${i+1}`);
-      allData = allData.concat(rows);
-    } catch(e) {
-      errs.push({ lbl: s.lbl, msg: e.message });
-    }
+  for(let i=0;i<valid.length;i++){
+    const s=valid[i];
+    document.getElementById('pb').style.width=((i/valid.length)*100)+'%';
+    document.getElementById('ltxt').textContent=`Fetching: ${s.lbl} (${i+1}/${valid.length})`;
+    try{ const rows=await fetchSheet(s.id,s.lbl||`Client ${i+1}`); allData=allData.concat(rows); }
+    catch(e){ errs.push({lbl:s.lbl,msg:e.message}); }
   }
-  document.getElementById('pb').style.width = '100%';
-  document.getElementById('tsLabel').textContent = 'Updated: ' + new Date().toLocaleTimeString('en-IN');
-
-  // Show errors
-  const eb = document.getElementById('errBanner');
-  if (errs.length) {
-    eb.style.display = 'block';
-    eb.innerHTML = `<strong style="color:var(--rd)">⚠️ ${errs.length} sheet(s) load nahi hui:</strong>` +
-      errs.map(e => `<div style="margin-top:5px;padding:6px 10px;background:rgba(239,68,68,.08);border-radius:5px;border-left:3px solid var(--rd)"><strong>${e.lbl}:</strong> ${e.msg}</div>`).join('') +
+  document.getElementById('pb').style.width='100%';
+  document.getElementById('tsLabel').textContent='Updated: '+new Date().toLocaleTimeString('en-IN');
+  const eb=document.getElementById('errBanner');
+  if(errs.length){
+    eb.style.display='block';
+    eb.innerHTML=`<strong style="color:var(--rd)">⚠️ ${errs.length} sheet(s) load nahi hui:</strong>`+
+      errs.map(e=>`<div style="margin-top:5px;padding:6px 10px;background:rgba(239,68,68,.08);border-radius:5px;border-left:3px solid var(--rd)"><strong>${e.lbl}:</strong> ${e.msg}</div>`).join('')+
       `<div style="margin-top:8px;font-size:11px;color:var(--t2)">Fix: Sheet → Share → "Anyone with the link" → Viewer</div>`;
-  } else {
-    eb.style.display = 'none';
-  }
-
-  if (!allData.length) {
-    tw.innerHTML = `<div class="empty"><div class="ico">⚠️</div><p>Data load nahi hua. Sheets ko public karo ya Sheet ID check karo.</p></div>`;
+  } else { eb.style.display='none'; }
+  if(!allData.length){
+    tw.innerHTML=`<div class="empty"><div class="ico">⚠️</div><p>Data load nahi hua. Sheets ko public karo ya Sheet ID check karo.</p></div>`;
     return;
   }
-
   buildFilterOpts();
   updateKPI(allData);
   updateCharts(allData);
   applyF();
 }
 
-async function fetchSheet(id, lbl) {
-  const url = `https://docs.google.com/spreadsheets/d/${id}/gviz/tq?tqx=out:json&sheet=${encodeURIComponent(TAB)}`;
+async function fetchSheet(id,lbl){
+  const url=`https://docs.google.com/spreadsheets/d/${id}/gviz/tq?tqx=out:json&sheet=${encodeURIComponent(TAB)}`;
   let res;
-  try { res = await fetch(url); } catch(e) { throw new Error('Network error — internet check karo'); }
-  const txt = await res.text();
-  if (txt.includes('PERMISSION_DENIED') || txt.includes('access denied') || txt.includes('"status":"error"')) {
+  try{ res=await fetch(url); } catch(e){ throw new Error('Network error — internet check karo'); }
+  const txt=await res.text();
+  if(txt.includes('PERMISSION_DENIED')||txt.includes('access denied')||txt.includes('"status":"error"'))
     throw new Error('Sheet private hai — "Anyone with the link → Viewer" set karo');
-  }
-  const m = txt.match(/google\.visualization\.Query\.setResponse\(([\s\S]*)\)/);
-  if (!m) throw new Error('Response parse nahi hua — Sheet ID ya tab name check karo');
-  const json = JSON.parse(m[1]);
-  if (json.status === 'error') throw new Error(json.errors?.[0]?.detailed_message || 'Google API error');
-  const cols = json.table.cols.map(c => c.label || '');
-  return (json.table.rows || []).map(row => {
-    const obj = { _c: lbl };
-    cols.forEach((col, i) => { const cell = row.c?.[i]; obj[col] = cell ? String(cell.f ?? cell.v ?? '') : ''; });
+  const m=txt.match(/google\.visualization\.Query\.setResponse\(([\s\S]*)\)/);
+  if(!m) throw new Error('Response parse nahi hua — Sheet ID ya tab name check karo');
+  const json=JSON.parse(m[1]);
+  if(json.status==='error') throw new Error(json.errors?.[0]?.detailed_message||'Google API error');
+  const cols=json.table.cols.map(c=>c.label||'');
+  return (json.table.rows||[]).map(row=>{
+    const obj={_c:lbl};
+    cols.forEach((col,i)=>{ const cell=row.c?.[i]; obj[col]=cell?String(cell.f??cell.v??''):''; });
     return obj;
   });
 }
 
-// ── KPI ──
-function updateKPI(data) {
-  const tot = data.length;
-  const cl = data.filter(r => (r.Status||'').toLowerCase()==='closed').length;
+// ── KPI (only rows that have ReceivedDate) ──
+function updateKPI(data){
+  // Count only rows that have a ReceivedDate for totals
+  const withDate = data.filter(r => (r.ReceivedDate||'').trim() !== '');
+  const tot = withDate.length;
+  const cl  = withDate.filter(r=>(r.Status||'').toLowerCase()==='closed').length;
   const pnd = tot - cl;
-  const br = data.filter(r => parseFloat(r.Ageing||0) > 2).length;
-  const avgA = tot ? (data.reduce((s,r) => s + parseFloat(r.Ageing||0), 0) / tot).toFixed(1) : '—';
-  const clis = new Set(data.map(r => r._c)).size;
+  const br  = withDate.filter(r=>parseFloat(r.Ageing||0)>2).length;
+  const clis= new Set(data.map(r=>r._c)).size;
+  const isF = data !== allData;
+
   document.getElementById('kTotal').textContent = tot.toLocaleString();
+  document.getElementById('kTotalSub').textContent = isF ? 'Filtered results' : 'All clients';
   document.getElementById('kProc').textContent = cl.toLocaleString();
-  document.getElementById('kProcP').textContent = tot ? ((cl/tot*100).toFixed(1) + '% of total') : '';
+  document.getElementById('kProcP').textContent = tot ? ((cl/tot*100).toFixed(1)+'% of total') : '';
   document.getElementById('kPend').textContent = pnd.toLocaleString();
-  document.getElementById('kPendP').textContent = tot ? ((pnd/tot*100).toFixed(1) + '% of total') : '';
+  document.getElementById('kPendP').textContent = tot ? ((pnd/tot*100).toFixed(1)+'% of total') : '';
   document.getElementById('kBrch').textContent = br.toLocaleString();
-  document.getElementById('kAge').textContent = avgA;
-  document.getElementById('kCli').textContent = clis;
+  document.getElementById('kCli').textContent  = clis;
+  document.getElementById('kCliSub').textContent = isF ? 'In filtered view' : 'Active sources';
 }
 
 // ── CHARTS ──
-function updateCharts(data) {
-  // Client bar
-  const cc = {};
-  data.forEach(r => { cc[r._c] = (cc[r._c]||0)+1; });
-  const sorted = Object.entries(cc).sort((a,b)=>b[1]-a[1]);
-  const mx = sorted[0]?.[1]||1;
-  document.getElementById('cliBar').innerHTML = sorted.map(([lbl,cnt],i) =>
+function updateCharts(data){
+  // 1. Client bar — only rows with ReceivedDate
+  const withDate = data.filter(r=>(r.ReceivedDate||'').trim()!=='');
+  const cc={};
+  withDate.forEach(r=>{ cc[r._c]=(cc[r._c]||0)+1; });
+  const sorted=Object.entries(cc).sort((a,b)=>b[1]-a[1]);
+  const mx=sorted[0]?.[1]||1;
+  document.getElementById('cliBar').innerHTML=sorted.map(([lbl,cnt],i)=>
     `<div class="brow"><div class="blbl" title="${lbl}">${lbl}</div><div class="btrack"><div class="bfill" style="width:${(cnt/mx*100).toFixed(1)}%;background:${CLRS[i%CLRS.length]}"><span class="bcnt">${cnt}</span></div></div></div>`
   ).join('');
 
-  // Donut
-  const sc = {};
-  data.forEach(r => { const s = r.Status||'Unknown'; sc[s]=(sc[s]||0)+1; });
-  const se = Object.entries(sc).sort((a,b)=>b[1]-a[1]);
-  const tot = data.length||1;
-  const svg = document.getElementById('donutSvg');
-  const leg = document.getElementById('donutLeg');
-  svg.innerHTML = ''; leg.innerHTML = '';
-  const circ = 2*Math.PI*38;
-  let off = 0;
-  se.forEach(([lbl,cnt],i) => {
-    const pct = cnt/tot;
-    const clr = lbl.toLowerCase()==='closed'?'#22c55e':lbl.toLowerCase()==='open'?'#ef4444':CLRS[i%CLRS.length];
-    const c = document.createElementNS('http://www.w3.org/2000/svg','circle');
+  // 2. Donut — status of rows with ReceivedDate
+  const sc={};
+  withDate.forEach(r=>{ const s=r.Status||'Unknown'; sc[s]=(sc[s]||0)+1; });
+  const se=Object.entries(sc).sort((a,b)=>b[1]-a[1]);
+  const tot=withDate.length||1;
+  const svg=document.getElementById('donutSvg');
+  const leg=document.getElementById('donutLeg');
+  svg.innerHTML=''; leg.innerHTML='';
+  const circ=2*Math.PI*38; let off=0;
+  se.forEach(([lbl,cnt],i)=>{
+    const pct=cnt/tot;
+    const clr=lbl.toLowerCase()==='closed'?'#22c55e':lbl.toLowerCase()==='open'?'#ef4444':CLRS[i%CLRS.length];
+    const c=document.createElementNS('http://www.w3.org/2000/svg','circle');
     c.setAttribute('cx',50);c.setAttribute('cy',50);c.setAttribute('r',38);
     c.setAttribute('fill','none');c.setAttribute('stroke',clr);c.setAttribute('stroke-width',14);
     c.setAttribute('stroke-dasharray',`${pct*circ} ${circ-pct*circ}`);
     c.setAttribute('stroke-dashoffset',-(off*circ)+(circ/4));
     svg.appendChild(c); off+=pct;
-    leg.innerHTML += `<div class="ditem"><div class="ddot" style="background:${clr}"></div><span>${lbl} <strong>${cnt}</strong></span></div>`;
+    leg.innerHTML+=`<div class="ditem"><div class="ddot" style="background:${clr}"></div><span>${lbl} <strong>${cnt}</strong></span></div>`;
   });
-  const t = document.createElementNS('http://www.w3.org/2000/svg','text');
+  const t=document.createElementNS('http://www.w3.org/2000/svg','text');
   t.setAttribute('x',50);t.setAttribute('y',54);t.setAttribute('text-anchor','middle');
   t.setAttribute('font-size','13');t.setAttribute('font-weight','700');t.setAttribute('fill','#e6edf3');
-  t.textContent = tot.toLocaleString(); svg.appendChild(t);
+  t.textContent=withDate.length.toLocaleString(); svg.appendChild(t);
 
-  // Aging
-  const bands=[0,2,5,10,Infinity];
-  const lbls=['0d','1-2d','3-5d','6-10d','>10d'];
-  const clrs=['#22c55e','#3b82f6','#eab308','#f97316','#ef4444'];
-  const cnts=[0,0,0,0,0];
-  data.forEach(r => {
-    const a=parseFloat(r.Ageing||0);
-    if(a===0)cnts[0]++;else if(a<=2)cnts[1]++;else if(a<=5)cnts[2]++;else if(a<=10)cnts[3]++;else cnts[4]++;
+  // 3. Day-wise grouped bar: Received vs Processed per ReceivedDate
+  const dayMap={};
+  withDate.forEach(r=>{
+    const d=normDate(r.ReceivedDate);
+    if(!d) return;
+    if(!dayMap[d]) dayMap[d]={recv:0,proc:0};
+    dayMap[d].recv++;
+    if((r.Status||'').toLowerCase()==='closed') dayMap[d].proc++;
   });
-  const mx2=Math.max(...cnts,1);
-  document.getElementById('ageBands').innerHTML = cnts.map((c,i)=>`<div class="abar" style="height:${Math.max(c/mx2*50,4)}px;background:${clrs[i]}">${c||''}</div>`).join('');
-  document.getElementById('ageLbls').innerHTML = lbls.map(l=>`<div class="albl">${l}</div>`).join('');
+  const days=Object.keys(dayMap).sort();
+  const maxVal=Math.max(...days.map(d=>dayMap[d].recv),1);
+  const BAR_H=100; // px height for max bar
 
-  // Client summary
+  if(!days.length){
+    document.getElementById('dayChart').innerHTML='<div style="color:var(--t3);font-size:12px;padding:20px">No dated records</div>';
+    document.getElementById('dayRange').textContent='';
+  } else {
+    document.getElementById('dayRange').textContent=`${fmtD(days[0])} → ${fmtD(days[days.length-1])}`;
+    const tip=document.getElementById('tip');
+    let html='';
+    days.forEach(d=>{
+      const rv=dayMap[d].recv, pv=dayMap[d].proc;
+      const rh=Math.max(Math.round(rv/maxVal*BAR_H),3);
+      const ph=Math.max(Math.round(pv/maxVal*BAR_H),3);
+      const lbl=fmtD(d);
+      html+=`<div class="day-group">
+        <div class="day-bars">
+          <div class="day-bar" style="height:${rh}px;background:var(--ac)" 
+               onmouseenter="showTip(event,'${lbl}','Received',${rv})" onmouseleave="hideTip()"></div>
+          <div class="day-bar" style="height:${ph}px;background:var(--gr)"
+               onmouseenter="showTip(event,'${lbl}','Processed',${pv})" onmouseleave="hideTip()"></div>
+        </div>
+        <div class="day-lbl">${lbl}</div>
+      </div>`;
+    });
+    document.getElementById('dayChart').innerHTML=html;
+  }
+
+  // 4. Client summary table — only rows with ReceivedDate
   const cm={};
-  data.forEach(r=>{const c=r._c;if(!cm[c])cm[c]={tot:0,cl:0,br:0};cm[c].tot++;if((r.Status||'').toLowerCase()==='closed')cm[c].cl++;if(parseFloat(r.Ageing||0)>2)cm[c].br++;});
-  document.getElementById('csmBody').innerHTML = Object.entries(cm).sort((a,b)=>b[1].tot-a[1].tot).map(([c,m],i)=>{
+  withDate.forEach(r=>{
+    const c=r._c;
+    if(!cm[c]) cm[c]={tot:0,cl:0,br:0};
+    cm[c].tot++;
+    if((r.Status||'').toLowerCase()==='closed') cm[c].cl++;
+    if(parseFloat(r.Ageing||0)>2) cm[c].br++;
+  });
+  document.getElementById('csmBody').innerHTML=Object.entries(cm).sort((a,b)=>b[1].tot-a[1].tot).map(([c,m])=>{
     const pct=(m.tot?m.cl/m.tot*100:0).toFixed(1);
     return `<tr><td><span class="chip">${c}</span></td><td><strong>${m.tot}</strong></td><td style="color:var(--gr)">${m.cl}</td><td style="color:var(--rd)">${m.tot-m.cl}</td><td style="color:var(--yw)">${m.br}</td><td>${pct}%</td></tr>`;
   }).join('');
 }
 
+// Tooltip helpers
+function showTip(e,day,type,val){
+  const tip=document.getElementById('tip');
+  tip.innerHTML=`<strong>${day}</strong><br>${type}: <strong style="color:${type==='Received'?'var(--ac)':'var(--gr)'}">${val}</strong>`;
+  tip.style.display='block';
+  tip.style.left=(e.pageX+12)+'px';
+  tip.style.top=(e.pageY-10)+'px';
+}
+function hideTip(){ document.getElementById('tip').style.display='none'; }
+
+// Date normalise: DD/MM/YYYY or YYYY-MM-DD → YYYY-MM-DD
+function normDate(s){
+  if(!s) return null;
+  s=s.trim();
+  const p=s.split('/');
+  if(p.length===3) return `${p[2]}-${p[1].padStart(2,'0')}-${p[0].padStart(2,'0')}`;
+  if(/^\d{4}-\d{2}-\d{2}/.test(s)) return s.slice(0,10);
+  return null;
+}
+function fmtD(iso){
+  // iso = YYYY-MM-DD → DD/MM
+  const p=iso.split('-'); return `${p[2]}/${p[1]}`;
+}
+
 // ── FILTERS ──
-function buildFilterOpts() {
+function buildFilterOpts(){
   const clis=[...new Set(allData.map(r=>r._c))].sort();
   const cous=[...new Set(allData.map(r=>r.Courier||'').filter(Boolean))].sort();
   document.getElementById('fCli').innerHTML='<option value="">All Clients</option>'+clis.map(c=>`<option>${c}</option>`).join('');
   document.getElementById('fCou').innerHTML='<option value="">All Couriers</option>'+cous.map(c=>`<option>${c}</option>`).join('');
 }
-
-function applyF() {
-  const cli = document.getElementById('fCli').value;
-  const cou = document.getElementById('fCou').value;
-  const sta = document.getElementById('fSta').value;
-  const sla = document.getElementById('fSLA').value;
-  const df  = document.getElementById('fDF').value;
-  const dt  = document.getElementById('fDT').value;
-
-  filtered = allData.filter(r => {
-    if (cli && r._c !== cli) return false;
-    if (cou && (r.Courier||'') !== cou) return false;
-    if (sta && (r.Status||'') !== sta) return false;
-    if (sla) {
-      // check both "Status " (with space) and SLA column
-      const rv = (r['Status ']||r['SLA']||'').trim();
-      if (rv !== sla) return false;
-    }
-    if (df || dt) {
-      const d = pDate(r.ReceivedDate);
-      if (d) {
-        if (df && d < new Date(df)) return false;
-        if (dt && d > new Date(dt + 'T23:59:59')) return false;
+function isFilterActive(){
+  return document.getElementById('fCli').value||document.getElementById('fCou').value||
+         document.getElementById('fSta').value||document.getElementById('fSLA').value||
+         document.getElementById('fDF').value||document.getElementById('fDT').value;
+}
+function applyF(){
+  const cli=document.getElementById('fCli').value;
+  const cou=document.getElementById('fCou').value;
+  const sta=document.getElementById('fSta').value;
+  const sla=document.getElementById('fSLA').value;
+  const df =document.getElementById('fDF').value;
+  const dt =document.getElementById('fDT').value;
+  filtered=allData.filter(r=>{
+    if(cli && r._c!==cli) return false;
+    if(cou && (r.Courier||'')!==cou) return false;
+    if(sta && (r.Status||'')!==sta) return false;
+    if(sla){ const rv=(r['Status ']||r['SLA']||'').trim(); if(rv!==sla) return false; }
+    if(df||dt){
+      const d=pDate(r.ReceivedDate);
+      if(d){
+        if(df && d<new Date(df)) return false;
+        if(dt && d>new Date(dt+'T23:59:59')) return false;
       }
     }
     return true;
   });
-
-  document.getElementById('rcnt').textContent = filtered.length.toLocaleString() + ' records';
-  page = 1;
+  document.getElementById('rcnt').textContent=filtered.length.toLocaleString()+' records';
+  document.getElementById('fbar').classList.toggle('has-filter',!!isFilterActive());
   updateKPI(filtered);
   updateCharts(filtered);
-  renderTable();
+  page=1; renderTable();
 }
-
-function clearF() {
-  ['fCli','fCou','fSta','fSLA'].forEach(id => document.getElementById(id).value='');
+function clearF(){
+  ['fCli','fCou','fSta','fSLA'].forEach(id=>document.getElementById(id).value='');
   document.getElementById('fDF').value='';
   document.getElementById('fDT').value='';
   applyF();
 }
-
-function pDate(s) {
-  if (!s) return null;
-  const p = s.split('/');
-  if (p.length===3) return new Date(`${p[2]}-${p[1].padStart(2,'0')}-${p[0].padStart(2,'0')}`);
+function pDate(s){
+  if(!s) return null;
+  const p=s.split('/');
+  if(p.length===3) return new Date(`${p[2]}-${p[1].padStart(2,'0')}-${p[0].padStart(2,'0')}`);
   return new Date(s);
 }
 
 // ── TABLE ──
-const COLS = [
+const COLS=[
   {k:'_c',l:'Client'},
   {k:'ReceivedDate',l:'Recv Date'},
   {k:'Customer',l:'Customer'},
@@ -469,30 +520,23 @@ const COLS = [
   {k:'Status',l:'Status'},
   {k:'Remarks',l:'Remarks'},
 ];
-
-function renderTable() {
-  const tw = document.getElementById('twrap');
-  const pg = document.getElementById('pgn');
-
-  if (!filtered.length) {
-    tw.innerHTML = `<div class="empty"><div class="ico">🔍</div><p>Koi record nahi mila. Filters clear karo.</p></div>`;
-    pg.style.display = 'none';
-    return;
+function renderTable(){
+  const tw=document.getElementById('twrap');
+  const pg=document.getElementById('pgn');
+  if(!filtered.length){
+    tw.innerHTML=`<div class="empty"><div class="ico">🔍</div><p>Koi record nahi mila. Filters clear karo.</p></div>`;
+    pg.style.display='none'; return;
   }
-
-  // Sort
-  const key = COLS[sortIdx].k;
-  const fd = [...filtered].sort((a,b) => {
-    let av=(a[key]||'').toString().toLowerCase(), bv=(b[key]||'').toString().toLowerCase();
-    const an=parseFloat(av), bn=parseFloat(bv);
-    if (!isNaN(an)&&!isNaN(bn)) return sortAsc?an-bn:bn-an;
+  const key=COLS[sortIdx].k;
+  const fd=[...filtered].sort((a,b)=>{
+    let av=(a[key]||'').toString().toLowerCase(),bv=(b[key]||'').toString().toLowerCase();
+    const an=parseFloat(av),bn=parseFloat(bv);
+    if(!isNaN(an)&&!isNaN(bn)) return sortAsc?an-bn:bn-an;
     return sortAsc?av.localeCompare(bv):bv.localeCompare(av);
   });
-
   const start=(page-1)*PG;
   const pageD=fd.slice(start,start+PG);
   const totP=Math.ceil(fd.length/PG);
-
   let h=`<table><thead><tr>`;
   COLS.forEach((c,i)=>{
     const cls=sortIdx===i?'srt':'';
@@ -500,14 +544,12 @@ function renderTable() {
     h+=`<th class="${cls}" onclick="doSort(${i})">${c.l} <span style="opacity:.5;font-size:9px">${ico}</span></th>`;
   });
   h+=`</tr></thead><tbody>`;
-
   pageD.forEach(row=>{
     h+='<tr>';
     COLS.forEach(c=>{
       const val=String(row[c.k]||'');
-      if(c.k==='_c'){
-        h+=`<td><span class="chip">${val}</span></td>`;
-      } else if(c.k==='Status'){
+      if(c.k==='_c'){ h+=`<td><span class="chip">${val}</span></td>`; }
+      else if(c.k==='Status'){
         const cls=val.toLowerCase()==='closed'?'b-cl':val.toLowerCase()==='open'?'b-op':'b-df';
         h+=`<td><span class="badge ${cls}">${val||'—'}</span></td>`;
       } else if(c.k==='Status '){
@@ -518,38 +560,23 @@ function renderTable() {
         const a=parseFloat(val||0);
         const clr=a===0?'var(--gr)':a<=2?'var(--bl)':a<=5?'var(--yw)':'var(--rd)';
         h+=`<td style="color:${clr};font-weight:600;font-family:'JetBrains Mono',monospace">${val||'0'}</td>`;
-      } else {
-        h+=`<td>${val||'—'}</td>`;
-      }
+      } else { h+=`<td>${val||'—'}</td>`; }
     });
     h+='</tr>';
   });
   h+='</tbody></table>';
   tw.innerHTML=h;
-
-  // Pagination
   pg.style.display='flex';
   let ph=`<button class="pbtn" onclick="goP(${page-1})" ${page===1?'disabled':''}>‹</button>`;
-  let s=Math.max(1,page-3), e=Math.min(totP,s+6);
-  if(e-s<6)s=Math.max(1,e-6);
+  let s=Math.max(1,page-3),e=Math.min(totP,s+6);
+  if(e-s<6) s=Math.max(1,e-6);
   for(let p=s;p<=e;p++) ph+=`<button class="pbtn ${p===page?'act':''}" onclick="goP(${p})">${p}</button>`;
   ph+=`<button class="pbtn" onclick="goP(${page+1})" ${page===totP?'disabled':''}>›</button>`;
   ph+=`<span class="pinfo">Page ${page}/${totP} · ${filtered.length.toLocaleString()} rows</span>`;
   pg.innerHTML=ph;
 }
-
-function goP(p){
-  const tot=Math.ceil(filtered.length/PG);
-  if(p<1||p>tot)return;
-  page=p;
-  renderTable();
-  document.getElementById('twrap').scrollTop=0;
-}
-
-function doSort(i){
-  if(sortIdx===i) sortAsc=!sortAsc; else{sortIdx=i;sortAsc=true;}
-  renderTable();
-}
+function goP(p){ const tot=Math.ceil(filtered.length/PG); if(p<1||p>tot)return; page=p; renderTable(); document.getElementById('twrap').scrollTop=0; }
+function doSort(i){ if(sortIdx===i) sortAsc=!sortAsc; else{sortIdx=i;sortAsc=true;} renderTable(); }
 
 // ── EXPORT ──
 function exportCSV(){
