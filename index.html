@@ -370,6 +370,9 @@
     </div>
   </div>
 
+  <!-- ERROR BANNER -->
+  <div id="fetchErrorBanner" style="display:none;background:#161b22;border:1px solid #ef4444;border-radius:10px;padding:16px 20px;margin-bottom:20px;font-size:13px;color:#e6edf3;line-height:1.6;"></div>
+
   <!-- KPI CARDS -->
   <div class="kpi-grid" id="kpiGrid">
     <div class="kpi-card orange">
@@ -517,12 +520,12 @@ function initSources() {
   } else {
     sheetSources = [
       { id: '1ZcxxO5Eq4lcDNrFeQCfy-fn4BLY9UW5O93cU0MGwMeY', label: 'Pilgrim' }
-      { id: '1uUg5ZT1aRUgzC-xSMhKTbeBc7YOd7IgjM_W2DOU0gHQ', label: 'Acefour' }
-       
     ];
   }
   renderSheetList();
   document.getElementById('sheetCount').textContent = `(${sheetSources.length} source${sheetSources.length !== 1 ? 's' : ''})`;
+  // Auto open config so user can see/verify sheet sources
+  document.getElementById('configBody').classList.add('open');
 }
 
 function renderSheetList() {
@@ -567,6 +570,7 @@ async function fetchAllSheets() {
   document.getElementById('pagination').style.display = 'none';
 
   allData = [];
+  const fetchErrors = [];
   const valid = sheetSources.filter(s => s.id.trim());
   if (!valid.length) {
     tableWrap.innerHTML = `<div class="empty-state"><div class="icon">⚠️</div><p>No sheet sources configured. Add sheet IDs above.</p></div>`;
@@ -585,12 +589,39 @@ async function fetchAllSheets() {
     try {
       const rows = await fetchSheet(s.id, s.label || `Client ${i+1}`);
       allData = allData.concat(rows);
+      fetchErrors.push({ label: s.label || `Client ${i+1}`, success: true, count: rows.length });
     } catch(e) {
       console.warn(`Failed to fetch ${s.label}:`, e);
+      fetchErrors.push({ label: s.label || `Client ${i+1}`, success: false, error: e.message });
     }
   }
 
   document.getElementById('lastUpdated').textContent = 'Updated: ' + new Date().toLocaleTimeString('en-IN');
+
+  // Show fetch summary / errors
+  const errorDiv = document.getElementById('fetchErrorBanner');
+  const failed = fetchErrors.filter(e => !e.success);
+  const succeeded = fetchErrors.filter(e => e.success);
+  if (failed.length > 0) {
+    errorDiv.style.display = 'block';
+    errorDiv.innerHTML = `<strong style="color:#ef4444">⚠️ ${failed.length} sheet(s) failed to load:</strong><br>` +
+      failed.map(e => `<div style="margin-top:6px;padding:8px 12px;background:rgba(239,68,68,.08);border-radius:6px;border-left:3px solid #ef4444">
+        <strong>${e.label}:</strong> ${e.error}
+      </div>`).join('') +
+      (succeeded.length > 0 ? `<div style="margin-top:8px;color:#22c55e;font-size:12px">✓ ${succeeded.length} sheet(s) loaded successfully (${allData.length} rows total)</div>` : '') +
+      `<div style="margin-top:10px;font-size:12px;color:#8b949e">Fix: Google Sheet open karo → Share → "Anyone with the link" → Viewer set karo</div>`;
+  } else {
+    errorDiv.style.display = 'none';
+  }
+
+  if (!allData.length) {
+    tableWrap.innerHTML = `<div class="empty-state">
+      <div class="icon">⚠️</div>
+      <p>Koi data load nahi hua. Upar errors dekho aur sheets ko public karo.</p>
+    </div>`;
+    return;
+  }
+
   updateFilterOptions();
   updateKPIs(allData);
   updateCharts(allData);
@@ -600,10 +631,29 @@ async function fetchAllSheets() {
 async function fetchSheet(sheetId, clientLabel) {
   const encoded = encodeURIComponent(TAB_NAME);
   const url = `https://docs.google.com/spreadsheets/d/${sheetId}/gviz/tq?tqx=out:json&sheet=${encoded}`;
-  const res = await fetch(url);
+  let res;
+  try {
+    res = await fetch(url);
+  } catch(e) {
+    throw new Error(`Network error for "${clientLabel}" — check internet connection`);
+  }
   const text = await res.text();
-  // Strip google's wrapper
-  const json = JSON.parse(text.match(/google\.visualization\.Query\.setResponse\(([\s\S]*)\)/)[1]);
+  // Check for Google's error response
+  if (text.includes('"status":"error"') || text.includes('access denied') || text.includes('PERMISSION_DENIED')) {
+    throw new Error(`"${clientLabel}" sheet is PRIVATE — Please set sharing to "Anyone with the link → Viewer"`);
+  }
+  if (text.includes('Invalid sheet name') || text.includes('sheet not found')) {
+    throw new Error(`Tab "${TAB_NAME}" not found in "${clientLabel}" sheet — check tab name exactly`);
+  }
+  const match = text.match(/google\.visualization\.Query\.setResponse\(([\s\S]*)\)/);
+  if (!match) {
+    throw new Error(`"${clientLabel}" — Could not parse response. Sheet may be private or Sheet ID is wrong.`);
+  }
+  const json = JSON.parse(match[1]);
+  if (json.status === 'error') {
+    const msg = json.errors?.[0]?.detailed_message || json.errors?.[0]?.message || 'Unknown error';
+    throw new Error(`"${clientLabel}" error: ${msg}`);
+  }
   const cols = json.table.cols.map(c => c.label);
   const rows = (json.table.rows || []).map(row => {
     const obj = { _client: clientLabel, _sheetId: sheetId };
