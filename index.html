@@ -5,495 +5,203 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>B2C Return Dashboard</title>
 <style>
-  @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap');
-
-  :root {
-    --bg: #0d1117;
-    --surface: #161b22;
-    --surface2: #1c2128;
-    --border: #30363d;
-    --accent: #f97316;
-    --accent2: #fb923c;
-    --green: #22c55e;
-    --red: #ef4444;
-    --yellow: #eab308;
-    --blue: #3b82f6;
-    --purple: #a855f7;
-    --text: #e6edf3;
-    --text2: #8b949e;
-    --text3: #6e7681;
-  }
-
-  * { margin: 0; padding: 0; box-sizing: border-box; }
-
-  body {
-    background: var(--bg);
-    color: var(--text);
-    font-family: 'Inter', sans-serif;
-    min-height: 100vh;
-  }
-
-  /* HEADER */
-  .header {
-    background: var(--surface);
-    border-bottom: 1px solid var(--border);
-    padding: 16px 28px;
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    position: sticky;
-    top: 0;
-    z-index: 100;
-  }
-  .header-left { display: flex; align-items: center; gap: 14px; }
-  .logo {
-    width: 36px; height: 36px;
-    background: linear-gradient(135deg, var(--accent), #c2410c);
-    border-radius: 8px;
-    display: flex; align-items: center; justify-content: center;
-    font-size: 18px;
-  }
-  .header h1 { font-size: 16px; font-weight: 600; letter-spacing: -0.3px; }
-  .header p { font-size: 12px; color: var(--text2); margin-top: 1px; }
-  .header-right { display: flex; align-items: center; gap: 12px; }
-  .refresh-btn {
-    background: var(--surface2);
-    border: 1px solid var(--border);
-    color: var(--text);
-    padding: 7px 14px;
-    border-radius: 6px;
-    font-size: 13px;
-    cursor: pointer;
-    display: flex; align-items: center; gap: 6px;
-    transition: border-color .2s;
-  }
-  .refresh-btn:hover { border-color: var(--accent); color: var(--accent); }
-  .last-updated { font-size: 12px; color: var(--text3); }
-  .live-dot {
-    width: 8px; height: 8px;
-    background: var(--green);
-    border-radius: 50%;
-    animation: pulse 2s infinite;
-  }
-  @keyframes pulse { 0%,100%{opacity:1} 50%{opacity:.3} }
-
-  /* MAIN */
-  .main { padding: 24px 28px; max-width: 1600px; margin: 0 auto; }
-
-  /* SHEET CONFIG PANEL */
-  .config-panel {
-    background: var(--surface);
-    border: 1px solid var(--border);
-    border-radius: 10px;
-    padding: 20px;
-    margin-bottom: 24px;
-  }
-  .config-header {
-    display: flex; align-items: center; justify-content: space-between;
-    margin-bottom: 16px;
-  }
-  .config-header h2 { font-size: 14px; font-weight: 600; }
-  .toggle-config {
-    background: none; border: 1px solid var(--border);
-    color: var(--text2); padding: 5px 12px; border-radius: 5px;
-    font-size: 12px; cursor: pointer;
-  }
-  .toggle-config:hover { border-color: var(--accent); color: var(--accent); }
-  .config-body { display: none; }
-  .config-body.open { display: block; }
-  .sheet-list { display: flex; flex-direction: column; gap: 8px; margin-bottom: 12px; }
-  .sheet-row {
-    display: grid; grid-template-columns: 1fr 220px 36px;
-    gap: 8px; align-items: center;
-  }
-  .sheet-row input {
-    background: var(--surface2);
-    border: 1px solid var(--border);
-    border-radius: 6px;
-    padding: 7px 10px;
-    color: var(--text);
-    font-size: 12px;
-    font-family: 'JetBrains Mono', monospace;
-    width: 100%;
-  }
-  .sheet-row input:focus { outline: none; border-color: var(--accent); }
-  .del-btn {
-    background: none; border: 1px solid var(--border);
-    border-radius: 6px; padding: 6px;
-    color: var(--red); cursor: pointer; font-size: 14px;
-  }
-  .del-btn:hover { background: rgba(239,68,68,.1); }
-  .config-actions { display: flex; gap: 8px; }
-  .add-btn, .load-btn {
-    padding: 8px 16px; border-radius: 6px; font-size: 13px;
-    cursor: pointer; border: none; font-weight: 500;
-  }
-  .add-btn { background: var(--surface2); border: 1px solid var(--border); color: var(--text); }
-  .add-btn:hover { border-color: var(--accent); }
-  .load-btn { background: var(--accent); color: white; }
-  .load-btn:hover { background: var(--accent2); }
-
-  /* SUMMARY CARDS */
-  .kpi-grid {
-    display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
-    gap: 14px;
-    margin-bottom: 24px;
-  }
-  .kpi-card {
-    background: var(--surface);
-    border: 1px solid var(--border);
-    border-radius: 10px;
-    padding: 18px;
-    position: relative;
-    overflow: hidden;
-  }
-  .kpi-card::before {
-    content: '';
-    position: absolute; top: 0; left: 0; right: 0; height: 2px;
-  }
-  .kpi-card.orange::before { background: var(--accent); }
-  .kpi-card.green::before { background: var(--green); }
-  .kpi-card.red::before { background: var(--red); }
-  .kpi-card.yellow::before { background: var(--yellow); }
-  .kpi-card.blue::before { background: var(--blue); }
-  .kpi-card.purple::before { background: var(--purple); }
-  .kpi-label { font-size: 11px; color: var(--text2); text-transform: uppercase; letter-spacing: .5px; margin-bottom: 8px; }
-  .kpi-value { font-size: 28px; font-weight: 700; letter-spacing: -1px; font-family: 'JetBrains Mono', monospace; }
-  .kpi-sub { font-size: 11px; color: var(--text3); margin-top: 4px; }
-  .kpi-card.orange .kpi-value { color: var(--accent); }
-  .kpi-card.green .kpi-value { color: var(--green); }
-  .kpi-card.red .kpi-value { color: var(--red); }
-  .kpi-card.yellow .kpi-value { color: var(--yellow); }
-  .kpi-card.blue .kpi-value { color: var(--blue); }
-  .kpi-card.purple .kpi-value { color: var(--purple); }
-
-  /* CHARTS ROW */
-  .charts-row {
-    display: grid; grid-template-columns: 1fr 1fr 1fr;
-    gap: 14px; margin-bottom: 24px;
-  }
-  @media(max-width:1100px) { .charts-row { grid-template-columns: 1fr 1fr; } }
-  @media(max-width:700px) { .charts-row { grid-template-columns: 1fr; } }
-
-  .chart-card {
-    background: var(--surface);
-    border: 1px solid var(--border);
-    border-radius: 10px;
-    padding: 18px;
-  }
-  .chart-title { font-size: 13px; font-weight: 600; color: var(--text2); margin-bottom: 14px; }
-
-  /* BAR CHART */
-  .bar-chart { display: flex; flex-direction: column; gap: 8px; }
-  .bar-row { display: flex; align-items: center; gap: 10px; }
-  .bar-label { font-size: 11px; color: var(--text2); width: 90px; flex-shrink: 0; text-align: right; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
-  .bar-track { flex: 1; background: var(--surface2); border-radius: 3px; height: 20px; position: relative; overflow: hidden; }
-  .bar-fill { height: 100%; border-radius: 3px; transition: width .6s ease; display: flex; align-items: center; padding-left: 8px; }
-  .bar-count { font-size: 11px; font-weight: 600; color: white; font-family: 'JetBrains Mono', monospace; }
-
-  /* PIE / DONUT */
-  .donut-wrap { display: flex; align-items: center; gap: 18px; }
-  .donut-legend { display: flex; flex-direction: column; gap: 7px; }
-  .legend-item { display: flex; align-items: center; gap: 7px; font-size: 12px; }
-  .legend-dot { width: 10px; height: 10px; border-radius: 3px; flex-shrink: 0; }
-
-  /* AGING BAND */
-  .aging-bands { display: flex; gap: 6px; height: 60px; align-items: flex-end; margin-bottom: 8px; }
-  .aging-bar {
-    flex: 1; border-radius: 4px 4px 0 0;
-    display: flex; align-items: flex-end; justify-content: center;
-    padding-bottom: 4px; font-size: 10px; font-weight: 600; color: white;
-    transition: height .5s ease;
-    min-height: 4px;
-  }
-  .aging-labels { display: flex; gap: 6px; }
-  .aging-lbl { flex: 1; text-align: center; font-size: 10px; color: var(--text3); }
-
-  /* FILTERS */
-  .filters-bar {
-    background: var(--surface);
-    border: 1px solid var(--border);
-    border-radius: 10px;
-    padding: 14px 18px;
-    margin-bottom: 20px;
-    display: flex; gap: 12px; flex-wrap: wrap; align-items: center;
-  }
-  .filter-group { display: flex; flex-direction: column; gap: 3px; }
-  .filter-label { font-size: 10px; color: var(--text3); text-transform: uppercase; letter-spacing: .5px; }
-  .filter-group select, .filter-group input[type=date] {
-    background: var(--surface2); border: 1px solid var(--border);
-    border-radius: 6px; padding: 6px 10px; color: var(--text);
-    font-size: 12px; min-width: 130px; cursor: pointer;
-  }
-  .filter-group select:focus, .filter-group input[type=date]:focus { outline: none; border-color: var(--accent); }
-  .clear-filters {
-    margin-top: auto; padding: 6px 12px; background: none;
-    border: 1px solid var(--border); border-radius: 6px;
-    color: var(--text2); font-size: 12px; cursor: pointer;
-  }
-  .clear-filters:hover { border-color: var(--accent); color: var(--accent); }
-  .result-count { margin-left: auto; font-size: 12px; color: var(--text2); }
-
-  /* TABLE */
-  .table-card {
-    background: var(--surface);
-    border: 1px solid var(--border);
-    border-radius: 10px;
-    overflow: hidden;
-    margin-bottom: 24px;
-  }
-  .table-header-bar {
-    padding: 14px 18px;
-    border-bottom: 1px solid var(--border);
-    display: flex; align-items: center; justify-content: space-between;
-  }
-  .table-header-bar h2 { font-size: 14px; font-weight: 600; }
-  .table-wrap { overflow-x: auto; max-height: 480px; overflow-y: auto; }
-  table { width: 100%; border-collapse: collapse; font-size: 12px; }
-  thead th {
-    background: var(--surface2);
-    padding: 10px 14px;
-    text-align: left;
-    font-size: 11px; color: var(--text2); font-weight: 500;
-    text-transform: uppercase; letter-spacing: .4px;
-    position: sticky; top: 0; z-index: 1;
-    white-space: nowrap;
-    border-bottom: 1px solid var(--border);
-    cursor: pointer; user-select: none;
-  }
-  thead th:hover { color: var(--accent); }
-  thead th .sort-icon { margin-left: 4px; opacity: .4; }
-  thead th.sorted .sort-icon { opacity: 1; color: var(--accent); }
-  tbody tr { border-bottom: 1px solid rgba(48,54,61,.5); transition: background .15s; }
-  tbody tr:hover { background: var(--surface2); }
-  tbody td { padding: 9px 14px; color: var(--text); white-space: nowrap; }
-  .badge {
-    display: inline-flex; align-items: center; gap: 4px;
-    padding: 2px 8px; border-radius: 4px; font-size: 11px; font-weight: 500;
-  }
-  .badge.closed { background: rgba(34,197,94,.12); color: var(--green); }
-  .badge.open { background: rgba(239,68,68,.12); color: var(--red); }
-  .badge.sla-match { background: rgba(34,197,94,.12); color: var(--green); }
-  .badge.sla-breach { background: rgba(239,68,68,.12); color: var(--red); }
-  .badge.pending { background: rgba(234,179,8,.12); color: var(--yellow); }
-  .badge.default { background: rgba(139,148,158,.1); color: var(--text2); }
-
-  /* CLIENT CHIP */
-  .client-chip {
-    display: inline-flex; align-items: center;
-    padding: 2px 8px; border-radius: 20px; font-size: 11px; font-weight: 500;
-    background: rgba(249,115,22,.12); color: var(--accent);
-  }
-
-  /* LOADING */
-  .loading-overlay {
-    display: flex; flex-direction: column;
-    align-items: center; justify-content: center;
-    min-height: 300px; gap: 16px;
-    color: var(--text2);
-  }
-  .spinner {
-    width: 36px; height: 36px;
-    border: 3px solid var(--border);
-    border-top-color: var(--accent);
-    border-radius: 50%;
-    animation: spin .8s linear infinite;
-  }
-  @keyframes spin { to { transform: rotate(360deg); } }
-  .loading-text { font-size: 13px; }
-  .progress-bar-wrap { width: 200px; height: 4px; background: var(--border); border-radius: 2px; overflow: hidden; }
-  .progress-bar { height: 100%; background: var(--accent); border-radius: 2px; transition: width .3s; }
-
-  /* EMPTY STATE */
-  .empty-state {
-    text-align: center; padding: 60px 20px; color: var(--text3);
-  }
-  .empty-state .icon { font-size: 40px; margin-bottom: 12px; }
-  .empty-state p { font-size: 14px; }
-
-  /* PAGINATION */
-  .pagination { display: flex; align-items: center; gap: 6px; padding: 12px 18px; border-top: 1px solid var(--border); }
-  .page-btn {
-    background: var(--surface2); border: 1px solid var(--border);
-    border-radius: 5px; padding: 5px 10px; font-size: 12px;
-    color: var(--text2); cursor: pointer;
-  }
-  .page-btn:hover, .page-btn.active { border-color: var(--accent); color: var(--accent); background: rgba(249,115,22,.08); }
-  .page-btn:disabled { opacity: .4; cursor: default; }
-  .page-info { margin: 0 auto; font-size: 12px; color: var(--text3); }
-
-  /* CLIENT BREAKDOWN TABLE */
-  .client-table { width: 100%; border-collapse: collapse; font-size: 12px; }
-  .client-table th {
-    background: var(--surface2); padding: 8px 12px;
-    text-align: left; font-size: 11px; color: var(--text2);
-    border-bottom: 1px solid var(--border);
-  }
-  .client-table td { padding: 8px 12px; border-bottom: 1px solid rgba(48,54,61,.4); }
-  .pct-bar { display: inline-block; height: 6px; border-radius: 3px; margin-left: 6px; vertical-align: middle; }
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap');
+:root{--bg:#0d1117;--s1:#161b22;--s2:#1c2128;--bd:#30363d;--ac:#f97316;--gr:#22c55e;--rd:#ef4444;--yw:#eab308;--bl:#3b82f6;--pu:#a855f7;--tx:#e6edf3;--t2:#8b949e;--t3:#6e7681;}
+*{margin:0;padding:0;box-sizing:border-box;}
+body{background:var(--bg);color:var(--tx);font-family:'Inter',sans-serif;min-height:100vh;}
+/* HEADER */
+.hdr{background:var(--s1);border-bottom:1px solid var(--bd);padding:14px 24px;display:flex;align-items:center;justify-content:space-between;position:sticky;top:0;z-index:100;}
+.hdr-l{display:flex;align-items:center;gap:12px;}
+.logo{width:34px;height:34px;background:linear-gradient(135deg,#f97316,#c2410c);border-radius:8px;display:flex;align-items:center;justify-content:center;font-size:16px;}
+.hdr h1{font-size:15px;font-weight:600;}
+.hdr p{font-size:11px;color:var(--t2);}
+.hdr-r{display:flex;align-items:center;gap:10px;}
+.btn{background:var(--s2);border:1px solid var(--bd);color:var(--tx);padding:6px 14px;border-radius:6px;font-size:12px;cursor:pointer;display:flex;align-items:center;gap:5px;}
+.btn:hover{border-color:var(--ac);color:var(--ac);}
+.dot{width:8px;height:8px;background:var(--gr);border-radius:50%;animation:pulse 2s infinite;}
+@keyframes pulse{0%,100%{opacity:1}50%{opacity:.3}}
+.ts{font-size:11px;color:var(--t3);}
+/* MAIN */
+.main{padding:20px 24px;max-width:1600px;margin:0 auto;}
+/* CONFIG */
+.cfg{background:var(--s1);border:1px solid var(--bd);border-radius:10px;padding:16px 20px;margin-bottom:20px;}
+.cfg-hdr{display:flex;align-items:center;justify-content:space-between;margin-bottom:0;}
+.cfg-hdr h2{font-size:13px;font-weight:600;}
+.cfg-body{margin-top:14px;}
+.cfg-note{font-size:12px;color:var(--t2);margin-bottom:10px;}
+.srow{display:grid;grid-template-columns:1fr 180px 32px;gap:8px;align-items:center;margin-bottom:6px;}
+.srow input{background:var(--s2);border:1px solid var(--bd);border-radius:6px;padding:6px 10px;color:var(--tx);font-size:12px;font-family:'JetBrains Mono',monospace;width:100%;}
+.srow input:focus{outline:none;border-color:var(--ac);}
+.delbtn{background:none;border:1px solid var(--bd);border-radius:5px;padding:5px;color:var(--rd);cursor:pointer;font-size:13px;}
+.cfg-acts{display:flex;gap:8px;margin-top:10px;}
+.abtn{padding:7px 14px;border-radius:6px;font-size:12px;cursor:pointer;font-weight:500;}
+.abtn-s{background:var(--s2);border:1px solid var(--bd);color:var(--tx);}
+.abtn-p{background:var(--ac);border:none;color:#fff;}
+.abtn-p:hover{background:#fb923c;}
+/* ERROR BANNER */
+.err-banner{display:none;background:rgba(239,68,68,.08);border:1px solid rgba(239,68,68,.4);border-radius:10px;padding:14px 18px;margin-bottom:18px;font-size:12px;line-height:1.7;}
+/* KPI */
+.kpi-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(160px,1fr));gap:12px;margin-bottom:20px;}
+.kpi{background:var(--s1);border:1px solid var(--bd);border-radius:10px;padding:16px;position:relative;overflow:hidden;}
+.kpi::before{content:'';position:absolute;top:0;left:0;right:0;height:2px;}
+.kpi.or::before{background:var(--ac)}.kpi.gr::before{background:var(--gr)}.kpi.rd::before{background:var(--rd)}.kpi.yw::before{background:var(--yw)}.kpi.bl::before{background:var(--bl)}.kpi.pu::before{background:var(--pu)}
+.kpi-lbl{font-size:10px;color:var(--t2);text-transform:uppercase;letter-spacing:.5px;margin-bottom:6px;}
+.kpi-val{font-size:26px;font-weight:700;letter-spacing:-1px;font-family:'JetBrains Mono',monospace;}
+.kpi-sub{font-size:10px;color:var(--t3);margin-top:3px;}
+.kpi.or .kpi-val{color:var(--ac)}.kpi.gr .kpi-val{color:var(--gr)}.kpi.rd .kpi-val{color:var(--rd)}.kpi.yw .kpi-val{color:var(--yw)}.kpi.bl .kpi-val{color:var(--bl)}.kpi.pu .kpi-val{color:var(--pu)}
+/* CHARTS */
+.charts{display:grid;grid-template-columns:1fr 1fr 1fr;gap:12px;margin-bottom:20px;}
+@media(max-width:1000px){.charts{grid-template-columns:1fr 1fr;}}
+@media(max-width:600px){.charts{grid-template-columns:1fr;}}
+.chart-card{background:var(--s1);border:1px solid var(--bd);border-radius:10px;padding:16px;}
+.chart-title{font-size:12px;font-weight:600;color:var(--t2);margin-bottom:12px;}
+.brow{display:flex;align-items:center;gap:8px;margin-bottom:6px;}
+.blbl{font-size:11px;color:var(--t2);width:80px;text-align:right;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;flex-shrink:0;}
+.btrack{flex:1;background:var(--s2);border-radius:3px;height:18px;overflow:hidden;}
+.bfill{height:100%;border-radius:3px;display:flex;align-items:center;padding-left:6px;transition:width .5s;}
+.bcnt{font-size:10px;font-weight:600;color:#fff;font-family:'JetBrains Mono',monospace;}
+.donut-wrap{display:flex;align-items:center;gap:14px;}
+.dlegend{display:flex;flex-direction:column;gap:6px;}
+.ditem{display:flex;align-items:center;gap:6px;font-size:11px;}
+.ddot{width:9px;height:9px;border-radius:3px;flex-shrink:0;}
+.abands{display:flex;gap:5px;height:55px;align-items:flex-end;margin-bottom:6px;}
+.abar{flex:1;border-radius:3px 3px 0 0;display:flex;align-items:flex-end;justify-content:center;padding-bottom:3px;font-size:10px;font-weight:600;color:#fff;min-height:4px;}
+.albls{display:flex;gap:5px;}
+.albl{flex:1;text-align:center;font-size:10px;color:var(--t3);}
+/* FILTERS */
+.fbar{background:var(--s1);border:1px solid var(--bd);border-radius:10px;padding:12px 16px;margin-bottom:18px;display:flex;gap:10px;flex-wrap:wrap;align-items:flex-end;}
+.fg{display:flex;flex-direction:column;gap:3px;}
+.flbl{font-size:10px;color:var(--t3);text-transform:uppercase;letter-spacing:.5px;}
+.fg select,.fg input[type=date]{background:var(--s2);border:1px solid var(--bd);border-radius:6px;padding:5px 8px;color:var(--tx);font-size:12px;min-width:120px;cursor:pointer;}
+.fg select:focus,.fg input[type=date]:focus{outline:none;border-color:var(--ac);}
+.cbtn{padding:5px 12px;background:none;border:1px solid var(--bd);border-radius:6px;color:var(--t2);font-size:12px;cursor:pointer;margin-top:auto;}
+.cbtn:hover{border-color:var(--rd);color:var(--rd);}
+.rcnt{margin-left:auto;font-size:11px;color:var(--t2);align-self:flex-end;}
+/* TABLE */
+.tcard{background:var(--s1);border:1px solid var(--bd);border-radius:10px;overflow:hidden;margin-bottom:20px;}
+.tbar{padding:12px 16px;border-bottom:1px solid var(--bd);display:flex;align-items:center;justify-content:space-between;}
+.tbar h2{font-size:13px;font-weight:600;}
+.twrap{overflow-x:auto;max-height:440px;overflow-y:auto;}
+table{width:100%;border-collapse:collapse;font-size:12px;}
+thead th{background:var(--s2);padding:9px 12px;text-align:left;font-size:11px;color:var(--t2);font-weight:500;text-transform:uppercase;letter-spacing:.4px;position:sticky;top:0;z-index:1;white-space:nowrap;border-bottom:1px solid var(--bd);cursor:pointer;user-select:none;}
+thead th:hover{color:var(--ac);}
+thead th.srt{color:var(--ac);}
+tbody tr{border-bottom:1px solid rgba(48,54,61,.4);}
+tbody tr:hover{background:var(--s2);}
+tbody td{padding:8px 12px;white-space:nowrap;}
+.badge{display:inline-flex;align-items:center;padding:2px 8px;border-radius:4px;font-size:10px;font-weight:500;}
+.b-cl{background:rgba(34,197,94,.12);color:var(--gr);}
+.b-op{background:rgba(239,68,68,.12);color:var(--rd);}
+.b-sm{background:rgba(34,197,94,.12);color:var(--gr);}
+.b-sb{background:rgba(239,68,68,.12);color:var(--rd);}
+.b-pd{background:rgba(234,179,8,.12);color:var(--yw);}
+.b-df{background:rgba(139,148,158,.1);color:var(--t2);}
+.chip{display:inline-flex;padding:2px 8px;border-radius:20px;font-size:10px;font-weight:500;background:rgba(249,115,22,.12);color:var(--ac);}
+/* PAGINATION */
+.pgn{display:flex;align-items:center;gap:5px;padding:10px 16px;border-top:1px solid var(--bd);flex-wrap:wrap;}
+.pbtn{background:var(--s2);border:1px solid var(--bd);border-radius:5px;padding:4px 9px;font-size:11px;color:var(--t2);cursor:pointer;}
+.pbtn:hover,.pbtn.act{border-color:var(--ac);color:var(--ac);background:rgba(249,115,22,.08);}
+.pbtn:disabled{opacity:.35;cursor:default;pointer-events:none;}
+.pinfo{margin-left:auto;font-size:11px;color:var(--t3);}
+/* LOADING */
+.loading{display:flex;flex-direction:column;align-items:center;justify-content:center;min-height:260px;gap:14px;color:var(--t2);}
+.spin{width:32px;height:32px;border:3px solid var(--bd);border-top-color:var(--ac);border-radius:50%;animation:spin .7s linear infinite;}
+@keyframes spin{to{transform:rotate(360deg)}}
+.ltxt{font-size:12px;}
+.pbw{width:180px;height:3px;background:var(--bd);border-radius:2px;overflow:hidden;}
+.pb{height:100%;background:var(--ac);border-radius:2px;transition:width .3s;}
+.empty{text-align:center;padding:50px 20px;color:var(--t3);}
+.empty .ico{font-size:36px;margin-bottom:10px;}
+.empty p{font-size:13px;}
+/* CLIENT SUMMARY */
+.csm td,.csm th{padding:8px 12px;border-bottom:1px solid rgba(48,54,61,.4);}
+.csm th{background:var(--s2);font-size:11px;color:var(--t2);font-weight:500;text-transform:uppercase;letter-spacing:.4px;}
 </style>
 </head>
 <body>
 
-<div class="header">
-  <div class="header-left">
+<div class="hdr">
+  <div class="hdr-l">
     <div class="logo">📦</div>
     <div>
       <h1>B2C Return Dashboard</h1>
-      <p>AWB Wise Received vs Processed — Multi-Client View</p>
+      <p>AWB Wise Received vs Processed — Multi-Client</p>
     </div>
   </div>
-  <div class="header-right">
-    <div class="live-dot"></div>
-    <span class="last-updated" id="lastUpdated">Not loaded yet</span>
-    <button class="refresh-btn" onclick="fetchAllSheets()">↻ Refresh</button>
+  <div class="hdr-r">
+    <div class="dot"></div>
+    <span class="ts" id="tsLabel">Not loaded</span>
+    <button class="btn" onclick="fetchAll()">↻ Refresh</button>
   </div>
 </div>
 
 <div class="main">
 
-  <!-- CONFIG PANEL -->
-  <div class="config-panel">
-    <div class="config-header">
-      <h2>⚙️ Google Sheet Sources <span id="sheetCount" style="color:var(--text3);font-weight:400;font-size:12px;"></span></h2>
-      <button class="toggle-config" onclick="toggleConfig()">▾ Edit Sources</button>
+  <!-- CONFIG -->
+  <div class="cfg">
+    <div class="cfg-hdr">
+      <h2>⚙️ Sheet Sources <span id="srcCount" style="color:var(--t3);font-weight:400;font-size:11px;"></span></h2>
+      <button class="btn" onclick="toggleCfg()">▾ Edit Sources</button>
     </div>
-    <div class="config-body" id="configBody">
-      <p style="font-size:12px;color:var(--text2);margin-bottom:12px;">Add each client's Google Sheet ID and a label. Sheet must be publicly accessible (Anyone with link → Viewer).</p>
-      <div style="font-size:11px;color:var(--text3);margin-bottom:8px;font-family:'JetBrains Mono',monospace;">Sheet ID is the long code in the URL: docs.google.com/spreadsheets/d/<span style="color:var(--accent)">SHEET_ID_HERE</span>/edit</div>
-      <div class="sheet-list" id="sheetList"></div>
-      <div class="config-actions">
-        <button class="add-btn" onclick="addSheetRow()">+ Add Sheet</button>
-        <button class="load-btn" onclick="saveAndFetch()">✓ Load Data</button>
+    <div class="cfg-body" id="cfgBody" style="display:none;">
+      <p class="cfg-note">Har client ki Google Sheet ka ID aur naam dalo. Sheet "Anyone with the link → Viewer" honi chahiye.</p>
+      <p class="cfg-note" style="font-family:'JetBrains Mono',monospace;font-size:11px;">URL: docs.google.com/spreadsheets/d/<span style="color:var(--ac)">SHEET_ID_YAHAN</span>/edit</p>
+      <div id="slist"></div>
+      <div class="cfg-acts">
+        <button class="abtn abtn-s" onclick="addRow()">+ Add Sheet</button>
+        <button class="abtn abtn-p" onclick="saveLoad()">✓ Load Data</button>
       </div>
     </div>
   </div>
 
   <!-- ERROR BANNER -->
-  <div id="fetchErrorBanner" style="display:none;background:#161b22;border:1px solid #ef4444;border-radius:10px;padding:16px 20px;margin-bottom:20px;font-size:13px;color:#e6edf3;line-height:1.6;"></div>
+  <div class="err-banner" id="errBanner"></div>
 
-  <!-- KPI CARDS -->
-  <div class="kpi-grid" id="kpiGrid">
-    <div class="kpi-card orange">
-      <div class="kpi-label">Total Received</div>
-      <div class="kpi-value" id="kpiTotal">—</div>
-      <div class="kpi-sub">Across all clients</div>
-    </div>
-    <div class="kpi-card green">
-      <div class="kpi-label">Processed</div>
-      <div class="kpi-value" id="kpiProcessed">—</div>
-      <div class="kpi-sub" id="kpiProcessedPct"></div>
-    </div>
-    <div class="kpi-card red">
-      <div class="kpi-label">Pending / Open</div>
-      <div class="kpi-value" id="kpiPending">—</div>
-      <div class="kpi-sub" id="kpiPendingPct"></div>
-    </div>
-    <div class="kpi-card yellow">
-      <div class="kpi-label">SLA Breach</div>
-      <div class="kpi-value" id="kpiBreach">—</div>
-      <div class="kpi-sub">Ageing &gt; 2 days</div>
-    </div>
-    <div class="kpi-card blue">
-      <div class="kpi-label">Avg Ageing</div>
-      <div class="kpi-value" id="kpiAvgAge">—</div>
-      <div class="kpi-sub">Days (processed)</div>
-    </div>
-    <div class="kpi-card purple">
-      <div class="kpi-label">Clients</div>
-      <div class="kpi-value" id="kpiClients">—</div>
-      <div class="kpi-sub">Active sheet sources</div>
-    </div>
+  <!-- KPI -->
+  <div class="kpi-grid">
+    <div class="kpi or"><div class="kpi-lbl">Total Received</div><div class="kpi-val" id="kTotal">—</div><div class="kpi-sub">All clients</div></div>
+    <div class="kpi gr"><div class="kpi-lbl">Processed</div><div class="kpi-val" id="kProc">—</div><div class="kpi-sub" id="kProcP"></div></div>
+    <div class="kpi rd"><div class="kpi-lbl">Pending / Open</div><div class="kpi-val" id="kPend">—</div><div class="kpi-sub" id="kPendP"></div></div>
+    <div class="kpi yw"><div class="kpi-lbl">SLA Breach</div><div class="kpi-val" id="kBrch">—</div><div class="kpi-sub">Ageing &gt; 2 days</div></div>
+    <div class="kpi bl"><div class="kpi-lbl">Avg Ageing</div><div class="kpi-val" id="kAge">—</div><div class="kpi-sub">Days average</div></div>
+    <div class="kpi pu"><div class="kpi-lbl">Clients</div><div class="kpi-val" id="kCli">—</div><div class="kpi-sub">Active sources</div></div>
   </div>
 
   <!-- CHARTS -->
-  <div class="charts-row" id="chartsRow">
-    <!-- Client Breakdown Bar -->
-    <div class="chart-card">
-      <div class="chart-title">Returns by Client</div>
-      <div class="bar-chart" id="clientBarChart"></div>
-    </div>
-    <!-- Status Donut -->
-    <div class="chart-card">
-      <div class="chart-title">Status Distribution</div>
-      <div class="donut-wrap" id="donutWrap">
-        <svg width="110" height="110" viewBox="0 0 110 110" id="donutSvg"></svg>
-        <div class="donut-legend" id="donutLegend"></div>
-      </div>
-    </div>
-    <!-- Ageing Band -->
-    <div class="chart-card">
-      <div class="chart-title">Ageing Bands (Days)</div>
-      <div class="aging-bands" id="agingBands"></div>
-      <div class="aging-labels" id="agingLabels"></div>
-    </div>
+  <div class="charts">
+    <div class="chart-card"><div class="chart-title">Returns by Client</div><div id="cliBar"></div></div>
+    <div class="chart-card"><div class="chart-title">Status Distribution</div><div class="donut-wrap"><svg width="100" height="100" id="donutSvg"></svg><div class="dlegend" id="donutLeg"></div></div></div>
+    <div class="chart-card"><div class="chart-title">Ageing Bands (Days)</div><div class="abands" id="ageBands"></div><div class="albls" id="ageLbls"></div></div>
   </div>
 
   <!-- FILTERS -->
-  <div class="filters-bar">
-    <div class="filter-group">
-      <div class="filter-label">Client</div>
-      <select id="filterClient" onchange="applyFilters()">
-        <option value="">All Clients</option>
-      </select>
-    </div>
-    <div class="filter-group">
-      <div class="filter-label">Courier</div>
-      <select id="filterCourier" onchange="applyFilters()">
-        <option value="">All Couriers</option>
-      </select>
-    </div>
-    <div class="filter-group">
-      <div class="filter-label">Status</div>
-      <select id="filterStatus" onchange="applyFilters()">
-        <option value="">All Statuses</option>
-        <option value="Closed">Closed</option>
-        <option value="Open">Open</option>
-      </select>
-    </div>
-    <div class="filter-group">
-      <div class="filter-label">SLA</div>
-      <select id="filterSLA" onchange="applyFilters()">
-        <option value="">All</option>
-        <option value="SLA Match">SLA Match</option>
-        <option value="SLA Breach">SLA Breach</option>
-      </select>
-    </div>
-    <div class="filter-group">
-      <div class="filter-label">Date From</div>
-      <input type="date" id="filterDateFrom" onchange="applyFilters()">
-    </div>
-    <div class="filter-group">
-      <div class="filter-label">Date To</div>
-      <input type="date" id="filterDateTo" onchange="applyFilters()">
-    </div>
-    <button class="clear-filters" onclick="clearFilters()">✕ Clear</button>
-    <span class="result-count" id="resultCount"></span>
+  <div class="fbar" id="fbar">
+    <div class="fg"><div class="flbl">Client</div><select id="fCli" onchange="applyF()"><option value="">All Clients</option></select></div>
+    <div class="fg"><div class="flbl">Courier</div><select id="fCou" onchange="applyF()"><option value="">All Couriers</option></select></div>
+    <div class="fg"><div class="flbl">Status</div><select id="fSta" onchange="applyF()"><option value="">All</option><option>Closed</option><option>Open</option></select></div>
+    <div class="fg"><div class="flbl">SLA</div><select id="fSLA" onchange="applyF()"><option value="">All</option><option>SLA Match</option><option>SLA Breach</option></select></div>
+    <div class="fg"><div class="flbl">Date From</div><input type="date" id="fDF" onchange="applyF()"></div>
+    <div class="fg"><div class="flbl">Date To</div><input type="date" id="fDT" onchange="applyF()"></div>
+    <button class="cbtn" onclick="clearF()">✕ Clear</button>
+    <span class="rcnt" id="rcnt"></span>
   </div>
 
-  <!-- DATA TABLE -->
-  <div class="table-card">
-    <div class="table-header-bar">
-      <h2>Return AWB Detail</h2>
-      <button class="refresh-btn" onclick="exportCSV()" style="font-size:12px;">⬇ Export CSV</button>
+  <!-- TABLE -->
+  <div class="tcard">
+    <div class="tbar"><h2>Return AWB Detail</h2><button class="btn" onclick="exportCSV()">⬇ Export CSV</button></div>
+    <div class="twrap" id="twrap">
+      <div class="empty"><div class="ico">📋</div><p>Sheet IDs add karo upar aur "Load Data" dabao.</p></div>
     </div>
-    <div class="table-wrap" id="tableWrap">
-      <div class="empty-state">
-        <div class="icon">📋</div>
-        <p>Add your Google Sheet links above and click "Load Data" to begin.</p>
-      </div>
-    </div>
-    <div class="pagination" id="pagination" style="display:none;"></div>
+    <div class="pgn" id="pgn" style="display:none;"></div>
   </div>
 
-  <!-- CLIENT SUMMARY TABLE -->
-  <div class="table-card">
-    <div class="table-header-bar"><h2>Client-wise Summary</h2></div>
+  <!-- CLIENT SUMMARY -->
+  <div class="tcard">
+    <div class="tbar"><h2>Client-wise Summary</h2></div>
     <div style="overflow-x:auto;">
-      <table class="client-table" id="clientSummaryTable">
-        <thead><tr><th>Client</th><th>Total</th><th>Processed</th><th>Pending</th><th>SLA Breach</th><th>% Processed</th></tr></thead>
-        <tbody id="clientSummaryBody"></tbody>
+      <table class="csm">
+        <thead><tr><th>Client</th><th>Total</th><th>Processed</th><th>Pending</th><th>SLA Breach</th><th>% Done</th></tr></thead>
+        <tbody id="csmBody"></tbody>
       </table>
     </div>
   </div>
@@ -501,510 +209,360 @@
 </div>
 
 <script>
-// ========================
-// CONFIG
-// ========================
-const TAB_NAME = "B2C Return AWB Wise Data Recv VS Process";
-const PAGE_SIZE = 100;
+const TAB = "B2C Return AWB Wise Data Recv VS Process";
+const PG = 100;
+const CLRS = ['#f97316','#3b82f6','#22c55e','#a855f7','#eab308','#ef4444','#06b6d4','#ec4899','#84cc16','#f59e0b','#8b5cf6','#10b981','#f43f5e','#0ea5e9','#d97706'];
+
 let allData = [];
-let filteredData = [];
-let currentPage = 1;
-let sortCol = 0, sortAsc = true;
-let sheetSources = [];
+let filtered = [];
+let page = 1;
+let sortIdx = 0, sortAsc = true;
+let sources = [];
 
-// Load saved sources or pre-fill with sample
-function initSources() {
-  const saved = localStorage.getItem('b2c_sheets');
-  if (saved) {
-    sheetSources = JSON.parse(saved);
-  } else {
-    sheetSources = [
-      { id: '1ZcxxO5Eq4lcDNrFeQCfy-fn4BLY9UW5O93cU0MGwMeY', label: 'Pilgrim' }
-    ];
-  }
-  renderSheetList();
-  document.getElementById('sheetCount').textContent = `(${sheetSources.length} source${sheetSources.length !== 1 ? 's' : ''})`;
-  // Auto open config so user can see/verify sheet sources
-  document.getElementById('configBody').classList.add('open');
+// ── SOURCES ──
+function initSrc() {
+  const s = localStorage.getItem('b2c_v2');
+  sources = s ? JSON.parse(s) : [{ id:'1ZcxxO5Eq4lcDNrFeQCfy-fn4BLY9UW5O93cU0MGwMeY', lbl:'Pilgrim' }];
+  renderSrc();
+  document.getElementById('srcCount').textContent = `(${sources.length})`;
 }
-
-function renderSheetList() {
-  const list = document.getElementById('sheetList');
-  list.innerHTML = '';
-  sheetSources.forEach((s, i) => {
-    const row = document.createElement('div');
-    row.className = 'sheet-row';
-    row.innerHTML = `
-      <input type="text" placeholder="Google Sheet ID (the long code in URL)" value="${s.id}" oninput="updateSheet(${i},'id',this.value)">
-      <input type="text" placeholder="Client Name" value="${s.label}" oninput="updateSheet(${i},'label',this.value)">
-      <button class="del-btn" onclick="removeSheet(${i})">✕</button>`;
-    list.appendChild(row);
+function renderSrc() {
+  const el = document.getElementById('slist');
+  el.innerHTML = '';
+  sources.forEach((s,i) => {
+    const d = document.createElement('div');
+    d.className = 'srow';
+    d.innerHTML = `<input type="text" placeholder="Sheet ID" value="${s.id}" oninput="sources[${i}].id=this.value">
+      <input type="text" placeholder="Client Name" value="${s.lbl}" oninput="sources[${i}].lbl=this.value">
+      <button class="delbtn" onclick="delRow(${i})">✕</button>`;
+    el.appendChild(d);
   });
 }
-
-function updateSheet(i, key, val) { sheetSources[i][key] = val; }
-function removeSheet(i) { sheetSources.splice(i, 1); renderSheetList(); }
-function addSheetRow() { sheetSources.push({ id: '', label: '' }); renderSheetList(); }
-function toggleConfig() {
-  const body = document.getElementById('configBody');
-  body.classList.toggle('open');
+function addRow() { sources.push({id:'',lbl:''}); renderSrc(); }
+function delRow(i) { sources.splice(i,1); renderSrc(); }
+function toggleCfg() {
+  const b = document.getElementById('cfgBody');
+  b.style.display = b.style.display === 'none' ? 'block' : 'none';
 }
-function saveAndFetch() {
-  sheetSources = sheetSources.filter(s => s.id.trim());
-  localStorage.setItem('b2c_sheets', JSON.stringify(sheetSources));
-  document.getElementById('sheetCount').textContent = `(${sheetSources.length} source${sheetSources.length !== 1 ? 's' : ''})`;
-  renderSheetList();
-  fetchAllSheets();
+function saveLoad() {
+  sources = sources.filter(s => s.id.trim());
+  localStorage.setItem('b2c_v2', JSON.stringify(sources));
+  document.getElementById('srcCount').textContent = `(${sources.length})`;
+  renderSrc();
+  fetchAll();
 }
 
-// ========================
-// FETCH DATA
-// ========================
-async function fetchAllSheets() {
-  const tableWrap = document.getElementById('tableWrap');
-  tableWrap.innerHTML = `<div class="loading-overlay">
-    <div class="spinner"></div>
-    <div class="loading-text">Fetching data from ${sheetSources.length} sheet(s)…</div>
-    <div class="progress-bar-wrap"><div class="progress-bar" id="fetchProgress" style="width:0%"></div></div>
-  </div>`;
-  document.getElementById('pagination').style.display = 'none';
+// ── FETCH ──
+async function fetchAll() {
+  const tw = document.getElementById('twrap');
+  tw.innerHTML = `<div class="loading"><div class="spin"></div><div class="ltxt" id="ltxt">Loading…</div><div class="pbw"><div class="pb" id="pb" style="width:0%"></div></div></div>`;
+  document.getElementById('pgn').style.display = 'none';
 
   allData = [];
-  const fetchErrors = [];
-  const valid = sheetSources.filter(s => s.id.trim());
+  const errs = [];
+  const valid = sources.filter(s => s.id.trim());
+
   if (!valid.length) {
-    tableWrap.innerHTML = `<div class="empty-state"><div class="icon">⚠️</div><p>No sheet sources configured. Add sheet IDs above.</p></div>`;
+    tw.innerHTML = `<div class="empty"><div class="ico">⚙️</div><p>Koi sheet add nahi ki. Upar "Edit Sources" mein Sheet ID dalo.</p></div>`;
     return;
   }
 
   for (let i = 0; i < valid.length; i++) {
     const s = valid[i];
-    const pct = Math.round(((i) / valid.length) * 100);
-    const pb = document.getElementById('fetchProgress');
-    if (pb) pb.style.width = pct + '%';
-
-    const lt = document.querySelector('.loading-text');
-    if (lt) lt.textContent = `Fetching: ${s.label || s.id} (${i+1}/${valid.length})`;
-
+    document.getElementById('pb').style.width = ((i/valid.length)*100) + '%';
+    document.getElementById('ltxt').textContent = `Fetching: ${s.lbl} (${i+1}/${valid.length})`;
     try {
-      const rows = await fetchSheet(s.id, s.label || `Client ${i+1}`);
+      const rows = await fetchSheet(s.id, s.lbl || `Client ${i+1}`);
       allData = allData.concat(rows);
-      fetchErrors.push({ label: s.label || `Client ${i+1}`, success: true, count: rows.length });
     } catch(e) {
-      console.warn(`Failed to fetch ${s.label}:`, e);
-      fetchErrors.push({ label: s.label || `Client ${i+1}`, success: false, error: e.message });
+      errs.push({ lbl: s.lbl, msg: e.message });
     }
   }
+  document.getElementById('pb').style.width = '100%';
+  document.getElementById('tsLabel').textContent = 'Updated: ' + new Date().toLocaleTimeString('en-IN');
 
-  document.getElementById('lastUpdated').textContent = 'Updated: ' + new Date().toLocaleTimeString('en-IN');
-
-  // Show fetch summary / errors
-  const errorDiv = document.getElementById('fetchErrorBanner');
-  const failed = fetchErrors.filter(e => !e.success);
-  const succeeded = fetchErrors.filter(e => e.success);
-  if (failed.length > 0) {
-    errorDiv.style.display = 'block';
-    errorDiv.innerHTML = `<strong style="color:#ef4444">⚠️ ${failed.length} sheet(s) failed to load:</strong><br>` +
-      failed.map(e => `<div style="margin-top:6px;padding:8px 12px;background:rgba(239,68,68,.08);border-radius:6px;border-left:3px solid #ef4444">
-        <strong>${e.label}:</strong> ${e.error}
-      </div>`).join('') +
-      (succeeded.length > 0 ? `<div style="margin-top:8px;color:#22c55e;font-size:12px">✓ ${succeeded.length} sheet(s) loaded successfully (${allData.length} rows total)</div>` : '') +
-      `<div style="margin-top:10px;font-size:12px;color:#8b949e">Fix: Google Sheet open karo → Share → "Anyone with the link" → Viewer set karo</div>`;
+  // Show errors
+  const eb = document.getElementById('errBanner');
+  if (errs.length) {
+    eb.style.display = 'block';
+    eb.innerHTML = `<strong style="color:var(--rd)">⚠️ ${errs.length} sheet(s) load nahi hui:</strong>` +
+      errs.map(e => `<div style="margin-top:5px;padding:6px 10px;background:rgba(239,68,68,.08);border-radius:5px;border-left:3px solid var(--rd)"><strong>${e.lbl}:</strong> ${e.msg}</div>`).join('') +
+      `<div style="margin-top:8px;font-size:11px;color:var(--t2)">Fix: Sheet → Share → "Anyone with the link" → Viewer</div>`;
   } else {
-    errorDiv.style.display = 'none';
+    eb.style.display = 'none';
   }
 
   if (!allData.length) {
-    tableWrap.innerHTML = `<div class="empty-state">
-      <div class="icon">⚠️</div>
-      <p>Koi data load nahi hua. Upar errors dekho aur sheets ko public karo.</p>
-    </div>`;
+    tw.innerHTML = `<div class="empty"><div class="ico">⚠️</div><p>Data load nahi hua. Sheets ko public karo ya Sheet ID check karo.</p></div>`;
     return;
   }
 
-  updateFilterOptions();
-  updateKPIs(allData);
+  buildFilterOpts();
+  updateKPI(allData);
   updateCharts(allData);
-  applyFilters();
+  applyF();
 }
 
-async function fetchSheet(sheetId, clientLabel) {
-  const encoded = encodeURIComponent(TAB_NAME);
-  const url = `https://docs.google.com/spreadsheets/d/${sheetId}/gviz/tq?tqx=out:json&sheet=${encoded}`;
+async function fetchSheet(id, lbl) {
+  const url = `https://docs.google.com/spreadsheets/d/${id}/gviz/tq?tqx=out:json&sheet=${encodeURIComponent(TAB)}`;
   let res;
-  try {
-    res = await fetch(url);
-  } catch(e) {
-    throw new Error(`Network error for "${clientLabel}" — check internet connection`);
+  try { res = await fetch(url); } catch(e) { throw new Error('Network error — internet check karo'); }
+  const txt = await res.text();
+  if (txt.includes('PERMISSION_DENIED') || txt.includes('access denied') || txt.includes('"status":"error"')) {
+    throw new Error('Sheet private hai — "Anyone with the link → Viewer" set karo');
   }
-  const text = await res.text();
-  // Check for Google's error response
-  if (text.includes('"status":"error"') || text.includes('access denied') || text.includes('PERMISSION_DENIED')) {
-    throw new Error(`"${clientLabel}" sheet is PRIVATE — Please set sharing to "Anyone with the link → Viewer"`);
-  }
-  if (text.includes('Invalid sheet name') || text.includes('sheet not found')) {
-    throw new Error(`Tab "${TAB_NAME}" not found in "${clientLabel}" sheet — check tab name exactly`);
-  }
-  const match = text.match(/google\.visualization\.Query\.setResponse\(([\s\S]*)\)/);
-  if (!match) {
-    throw new Error(`"${clientLabel}" — Could not parse response. Sheet may be private or Sheet ID is wrong.`);
-  }
-  const json = JSON.parse(match[1]);
-  if (json.status === 'error') {
-    const msg = json.errors?.[0]?.detailed_message || json.errors?.[0]?.message || 'Unknown error';
-    throw new Error(`"${clientLabel}" error: ${msg}`);
-  }
-  const cols = json.table.cols.map(c => c.label);
-  const rows = (json.table.rows || []).map(row => {
-    const obj = { _client: clientLabel, _sheetId: sheetId };
-    cols.forEach((col, i) => {
-      const cell = row.c[i];
-      obj[col] = cell ? (cell.f || cell.v || '') : '';
-    });
+  const m = txt.match(/google\.visualization\.Query\.setResponse\(([\s\S]*)\)/);
+  if (!m) throw new Error('Response parse nahi hua — Sheet ID ya tab name check karo');
+  const json = JSON.parse(m[1]);
+  if (json.status === 'error') throw new Error(json.errors?.[0]?.detailed_message || 'Google API error');
+  const cols = json.table.cols.map(c => c.label || '');
+  return (json.table.rows || []).map(row => {
+    const obj = { _c: lbl };
+    cols.forEach((col, i) => { const cell = row.c?.[i]; obj[col] = cell ? String(cell.f ?? cell.v ?? '') : ''; });
     return obj;
   });
-  return rows;
 }
 
-// ========================
-// KPI
-// ========================
-function updateKPIs(data) {
-  const total = data.length;
-  const closed = data.filter(r => (r['Status'] || '').toLowerCase() === 'closed').length;
-  const pending = total - closed;
-  const breach = data.filter(r => {
-    const a = parseFloat(r['Ageing'] || '0');
-    return a > 2;
-  }).length;
-  const ageSum = data.reduce((s, r) => s + (parseFloat(r['Ageing'] || '0')), 0);
-  const avgAge = total > 0 ? (ageSum / total).toFixed(1) : '—';
-  const clients = new Set(data.map(r => r._client)).size;
-
-  document.getElementById('kpiTotal').textContent = total.toLocaleString();
-  document.getElementById('kpiProcessed').textContent = closed.toLocaleString();
-  document.getElementById('kpiProcessedPct').textContent = total > 0 ? `${((closed/total)*100).toFixed(1)}% of total` : '';
-  document.getElementById('kpiPending').textContent = pending.toLocaleString();
-  document.getElementById('kpiPendingPct').textContent = total > 0 ? `${((pending/total)*100).toFixed(1)}% of total` : '';
-  document.getElementById('kpiBreach').textContent = breach.toLocaleString();
-  document.getElementById('kpiAvgAge').textContent = avgAge;
-  document.getElementById('kpiClients').textContent = clients;
+// ── KPI ──
+function updateKPI(data) {
+  const tot = data.length;
+  const cl = data.filter(r => (r.Status||'').toLowerCase()==='closed').length;
+  const pnd = tot - cl;
+  const br = data.filter(r => parseFloat(r.Ageing||0) > 2).length;
+  const avgA = tot ? (data.reduce((s,r) => s + parseFloat(r.Ageing||0), 0) / tot).toFixed(1) : '—';
+  const clis = new Set(data.map(r => r._c)).size;
+  document.getElementById('kTotal').textContent = tot.toLocaleString();
+  document.getElementById('kProc').textContent = cl.toLocaleString();
+  document.getElementById('kProcP').textContent = tot ? ((cl/tot*100).toFixed(1) + '% of total') : '';
+  document.getElementById('kPend').textContent = pnd.toLocaleString();
+  document.getElementById('kPendP').textContent = tot ? ((pnd/tot*100).toFixed(1) + '% of total') : '';
+  document.getElementById('kBrch').textContent = br.toLocaleString();
+  document.getElementById('kAge').textContent = avgA;
+  document.getElementById('kCli').textContent = clis;
 }
 
-// ========================
-// CHARTS
-// ========================
-const COLORS = ['#f97316','#3b82f6','#22c55e','#a855f7','#eab308','#ef4444','#06b6d4','#ec4899','#84cc16','#f59e0b'];
-
+// ── CHARTS ──
 function updateCharts(data) {
-  buildClientBar(data);
-  buildDonut(data);
-  buildAgingBands(data);
-  buildClientSummary(data);
-}
+  // Client bar
+  const cc = {};
+  data.forEach(r => { cc[r._c] = (cc[r._c]||0)+1; });
+  const sorted = Object.entries(cc).sort((a,b)=>b[1]-a[1]);
+  const mx = sorted[0]?.[1]||1;
+  document.getElementById('cliBar').innerHTML = sorted.map(([lbl,cnt],i) =>
+    `<div class="brow"><div class="blbl" title="${lbl}">${lbl}</div><div class="btrack"><div class="bfill" style="width:${(cnt/mx*100).toFixed(1)}%;background:${CLRS[i%CLRS.length]}"><span class="bcnt">${cnt}</span></div></div></div>`
+  ).join('');
 
-function buildClientBar(data) {
-  const counts = {};
-  data.forEach(r => { counts[r._client] = (counts[r._client] || 0) + 1; });
-  const sorted = Object.entries(counts).sort((a,b) => b[1]-a[1]);
-  const max = sorted[0]?.[1] || 1;
-  const container = document.getElementById('clientBarChart');
-  container.innerHTML = '';
-  sorted.forEach(([label, count], i) => {
-    const pct = (count / max * 100).toFixed(1);
-    const color = COLORS[i % COLORS.length];
-    container.innerHTML += `
-      <div class="bar-row">
-        <div class="bar-label" title="${label}">${label}</div>
-        <div class="bar-track">
-          <div class="bar-fill" style="width:${pct}%;background:${color}">
-            <span class="bar-count">${count.toLocaleString()}</span>
-          </div>
-        </div>
-      </div>`;
-  });
-}
-
-function buildDonut(data) {
-  const statusCounts = {};
-  data.forEach(r => {
-    const s = r['Status'] || 'Unknown';
-    statusCounts[s] = (statusCounts[s] || 0) + 1;
-  });
-  const entries = Object.entries(statusCounts).sort((a,b) => b[1]-a[1]);
-  const total = data.length || 1;
+  // Donut
+  const sc = {};
+  data.forEach(r => { const s = r.Status||'Unknown'; sc[s]=(sc[s]||0)+1; });
+  const se = Object.entries(sc).sort((a,b)=>b[1]-a[1]);
+  const tot = data.length||1;
   const svg = document.getElementById('donutSvg');
-  const legend = document.getElementById('donutLegend');
-  svg.innerHTML = '';
-  legend.innerHTML = '';
-
-  const cx = 55, cy = 55, r = 40, strokeW = 16;
-  const circumference = 2 * Math.PI * r;
-  let offset = 0;
-  entries.forEach(([label, count], i) => {
-    const pct = count / total;
-    const dash = pct * circumference;
-    const color = label.toLowerCase() === 'closed' ? '#22c55e' : label.toLowerCase() === 'open' ? '#ef4444' : COLORS[i % COLORS.length];
-    const circle = document.createElementNS('http://www.w3.org/2000/svg','circle');
-    circle.setAttribute('cx', cx); circle.setAttribute('cy', cy); circle.setAttribute('r', r);
-    circle.setAttribute('fill', 'none');
-    circle.setAttribute('stroke', color);
-    circle.setAttribute('stroke-width', strokeW);
-    circle.setAttribute('stroke-dasharray', `${dash} ${circumference - dash}`);
-    circle.setAttribute('stroke-dashoffset', -offset * circumference + circumference/4);
-    svg.appendChild(circle);
-    offset += pct;
-    legend.innerHTML += `<div class="legend-item"><div class="legend-dot" style="background:${color}"></div><span>${label} <strong>${count.toLocaleString()}</strong></span></div>`;
+  const leg = document.getElementById('donutLeg');
+  svg.innerHTML = ''; leg.innerHTML = '';
+  const circ = 2*Math.PI*38;
+  let off = 0;
+  se.forEach(([lbl,cnt],i) => {
+    const pct = cnt/tot;
+    const clr = lbl.toLowerCase()==='closed'?'#22c55e':lbl.toLowerCase()==='open'?'#ef4444':CLRS[i%CLRS.length];
+    const c = document.createElementNS('http://www.w3.org/2000/svg','circle');
+    c.setAttribute('cx',50);c.setAttribute('cy',50);c.setAttribute('r',38);
+    c.setAttribute('fill','none');c.setAttribute('stroke',clr);c.setAttribute('stroke-width',14);
+    c.setAttribute('stroke-dasharray',`${pct*circ} ${circ-pct*circ}`);
+    c.setAttribute('stroke-dashoffset',-(off*circ)+(circ/4));
+    svg.appendChild(c); off+=pct;
+    leg.innerHTML += `<div class="ditem"><div class="ddot" style="background:${clr}"></div><span>${lbl} <strong>${cnt}</strong></span></div>`;
   });
-  // center text
-  const text = document.createElementNS('http://www.w3.org/2000/svg','text');
-  text.setAttribute('x', cx); text.setAttribute('y', cy+4);
-  text.setAttribute('text-anchor','middle');
-  text.setAttribute('font-size','14'); text.setAttribute('font-weight','700');
-  text.setAttribute('fill','#e6edf3');
-  text.textContent = total.toLocaleString();
-  svg.appendChild(text);
-}
+  const t = document.createElementNS('http://www.w3.org/2000/svg','text');
+  t.setAttribute('x',50);t.setAttribute('y',54);t.setAttribute('text-anchor','middle');
+  t.setAttribute('font-size','13');t.setAttribute('font-weight','700');t.setAttribute('fill','#e6edf3');
+  t.textContent = tot.toLocaleString(); svg.appendChild(t);
 
-function buildAgingBands(data) {
-  const bands = [
-    { label: '0d', max: 0 },
-    { label: '1-2d', max: 2 },
-    { label: '3-5d', max: 5 },
-    { label: '6-10d', max: 10 },
-    { label: '>10d', max: Infinity }
-  ];
-  const counts = [0,0,0,0,0];
+  // Aging
+  const bands=[0,2,5,10,Infinity];
+  const lbls=['0d','1-2d','3-5d','6-10d','>10d'];
+  const clrs=['#22c55e','#3b82f6','#eab308','#f97316','#ef4444'];
+  const cnts=[0,0,0,0,0];
   data.forEach(r => {
-    const a = parseFloat(r['Ageing'] || '0');
-    if (a === 0) counts[0]++;
-    else if (a <= 2) counts[1]++;
-    else if (a <= 5) counts[2]++;
-    else if (a <= 10) counts[3]++;
-    else counts[4]++;
+    const a=parseFloat(r.Ageing||0);
+    if(a===0)cnts[0]++;else if(a<=2)cnts[1]++;else if(a<=5)cnts[2]++;else if(a<=10)cnts[3]++;else cnts[4]++;
   });
-  const maxC = Math.max(...counts, 1);
-  const bColors = ['#22c55e','#3b82f6','#eab308','#f97316','#ef4444'];
-  const bandsEl = document.getElementById('agingBands');
-  const labelsEl = document.getElementById('agingLabels');
-  bandsEl.innerHTML = '';
-  labelsEl.innerHTML = '';
-  counts.forEach((c, i) => {
-    const h = Math.max((c / maxC) * 55, 4);
-    bandsEl.innerHTML += `<div class="aging-bar" style="height:${h}px;background:${bColors[i]}">${c > 0 ? c : ''}</div>`;
-    labelsEl.innerHTML += `<div class="aging-lbl">${bands[i].label}</div>`;
-  });
+  const mx2=Math.max(...cnts,1);
+  document.getElementById('ageBands').innerHTML = cnts.map((c,i)=>`<div class="abar" style="height:${Math.max(c/mx2*50,4)}px;background:${clrs[i]}">${c||''}</div>`).join('');
+  document.getElementById('ageLbls').innerHTML = lbls.map(l=>`<div class="albl">${l}</div>`).join('');
+
+  // Client summary
+  const cm={};
+  data.forEach(r=>{const c=r._c;if(!cm[c])cm[c]={tot:0,cl:0,br:0};cm[c].tot++;if((r.Status||'').toLowerCase()==='closed')cm[c].cl++;if(parseFloat(r.Ageing||0)>2)cm[c].br++;});
+  document.getElementById('csmBody').innerHTML = Object.entries(cm).sort((a,b)=>b[1].tot-a[1].tot).map(([c,m],i)=>{
+    const pct=(m.tot?m.cl/m.tot*100:0).toFixed(1);
+    return `<tr><td><span class="chip">${c}</span></td><td><strong>${m.tot}</strong></td><td style="color:var(--gr)">${m.cl}</td><td style="color:var(--rd)">${m.tot-m.cl}</td><td style="color:var(--yw)">${m.br}</td><td>${pct}%</td></tr>`;
+  }).join('');
 }
 
-function buildClientSummary(data) {
-  const map = {};
-  data.forEach(r => {
-    const c = r._client;
-    if (!map[c]) map[c] = { total: 0, closed: 0, breach: 0 };
-    map[c].total++;
-    if ((r['Status'] || '').toLowerCase() === 'closed') map[c].closed++;
-    if (parseFloat(r['Ageing'] || '0') > 2) map[c].breach++;
-  });
-  const tbody = document.getElementById('clientSummaryBody');
-  tbody.innerHTML = '';
-  const sorted = Object.entries(map).sort((a,b) => b[1].total - a[1].total);
-  sorted.forEach(([client, m], i) => {
-    const pct = m.total > 0 ? ((m.closed / m.total) * 100).toFixed(1) : '0.0';
-    const color = COLORS[i % COLORS.length];
-    tbody.innerHTML += `<tr>
-      <td><span class="client-chip">${client}</span></td>
-      <td><strong>${m.total.toLocaleString()}</strong></td>
-      <td style="color:var(--green)">${m.closed.toLocaleString()}</td>
-      <td style="color:var(--red)">${(m.total - m.closed).toLocaleString()}</td>
-      <td style="color:var(--yellow)">${m.breach.toLocaleString()}</td>
-      <td>${pct}%<span class="pct-bar" style="width:${pct}px;background:${color}"></span></td>
-    </tr>`;
-  });
+// ── FILTERS ──
+function buildFilterOpts() {
+  const clis=[...new Set(allData.map(r=>r._c))].sort();
+  const cous=[...new Set(allData.map(r=>r.Courier||'').filter(Boolean))].sort();
+  document.getElementById('fCli').innerHTML='<option value="">All Clients</option>'+clis.map(c=>`<option>${c}</option>`).join('');
+  document.getElementById('fCou').innerHTML='<option value="">All Couriers</option>'+cous.map(c=>`<option>${c}</option>`).join('');
 }
 
-// ========================
-// FILTERS & TABLE
-// ========================
-function updateFilterOptions() {
-  const clients = [...new Set(allData.map(r => r._client))].sort();
-  const couriers = [...new Set(allData.map(r => r['Courier'] || '').filter(Boolean))].sort();
-  const clientSel = document.getElementById('filterClient');
-  const courierSel = document.getElementById('filterCourier');
-  clientSel.innerHTML = '<option value="">All Clients</option>' + clients.map(c => `<option value="${c}">${c}</option>`).join('');
-  courierSel.innerHTML = '<option value="">All Couriers</option>' + couriers.map(c => `<option value="${c}">${c}</option>`).join('');
-}
+function applyF() {
+  const cli = document.getElementById('fCli').value;
+  const cou = document.getElementById('fCou').value;
+  const sta = document.getElementById('fSta').value;
+  const sla = document.getElementById('fSLA').value;
+  const df  = document.getElementById('fDF').value;
+  const dt  = document.getElementById('fDT').value;
 
-function applyFilters() {
-  const client = document.getElementById('filterClient').value;
-  const courier = document.getElementById('filterCourier').value;
-  const status = document.getElementById('filterStatus').value;
-  const sla = document.getElementById('filterSLA').value;
-  const dateFrom = document.getElementById('filterDateFrom').value;
-  const dateTo = document.getElementById('filterDateTo').value;
-
-  filteredData = allData.filter(r => {
-    if (client && r._client !== client) return false;
-    if (courier && (r['Courier'] || '') !== courier) return false;
-    if (status && (r['Status'] || '') !== status) return false;
+  filtered = allData.filter(r => {
+    if (cli && r._c !== cli) return false;
+    if (cou && (r.Courier||'') !== cou) return false;
+    if (sta && (r.Status||'') !== sta) return false;
     if (sla) {
-      const rowSLA = (r['Status '] || r['SLA'] || '').trim();
-      if (rowSLA !== sla) return false;
+      // check both "Status " (with space) and SLA column
+      const rv = (r['Status ']||r['SLA']||'').trim();
+      if (rv !== sla) return false;
     }
-    if (dateFrom || dateTo) {
-      const d = parseDate(r['ReceivedDate']);
+    if (df || dt) {
+      const d = pDate(r.ReceivedDate);
       if (d) {
-        if (dateFrom && d < new Date(dateFrom)) return false;
-        if (dateTo && d > new Date(dateTo)) return false;
+        if (df && d < new Date(df)) return false;
+        if (dt && d > new Date(dt + 'T23:59:59')) return false;
       }
     }
     return true;
   });
 
-  document.getElementById('resultCount').textContent = `${filteredData.length.toLocaleString()} records`;
-  currentPage = 1;
+  document.getElementById('rcnt').textContent = filtered.length.toLocaleString() + ' records';
+  page = 1;
   renderTable();
 }
 
-function parseDate(str) {
-  if (!str) return null;
-  const parts = str.split('/');
-  if (parts.length === 3) return new Date(`${parts[2]}-${parts[1].padStart(2,'0')}-${parts[0].padStart(2,'0')}`);
-  return new Date(str);
+function clearF() {
+  ['fCli','fCou','fSta','fSLA'].forEach(id => document.getElementById(id).value='');
+  document.getElementById('fDF').value='';
+  document.getElementById('fDT').value='';
+  applyF();
 }
 
-function clearFilters() {
-  document.getElementById('filterClient').value = '';
-  document.getElementById('filterCourier').value = '';
-  document.getElementById('filterStatus').value = '';
-  document.getElementById('filterSLA').value = '';
-  document.getElementById('filterDateFrom').value = '';
-  document.getElementById('filterDateTo').value = '';
-  applyFilters();
+function pDate(s) {
+  if (!s) return null;
+  const p = s.split('/');
+  if (p.length===3) return new Date(`${p[2]}-${p[1].padStart(2,'0')}-${p[0].padStart(2,'0')}`);
+  return new Date(s);
 }
 
+// ── TABLE ──
 const COLS = [
-  { key: '_client', label: 'Client' },
-  { key: 'ReceivedDate', label: 'Recv. Date' },
-  { key: 'Customer', label: 'Customer' },
-  { key: 'Courier', label: 'Courier' },
-  { key: 'Identifier', label: 'AWB / ID' },
-  { key: 'Processed', label: 'Processed Date' },
-  { key: 'Ageing', label: 'Ageing (d)' },
-  { key: 'Status ', label: 'SLA Status' },
-  { key: 'Status', label: 'Status' },
-  { key: 'Remarks', label: 'Remarks' },
+  {k:'_c',l:'Client'},
+  {k:'ReceivedDate',l:'Recv Date'},
+  {k:'Customer',l:'Customer'},
+  {k:'Courier',l:'Courier'},
+  {k:'Identifier',l:'AWB / ID'},
+  {k:'Processed',l:'Processed'},
+  {k:'Ageing',l:'Age(d)'},
+  {k:'Status ',l:'SLA'},
+  {k:'Status',l:'Status'},
+  {k:'Remarks',l:'Remarks'},
 ];
 
 function renderTable() {
-  const wrap = document.getElementById('tableWrap');
-  const pagination = document.getElementById('pagination');
+  const tw = document.getElementById('twrap');
+  const pg = document.getElementById('pgn');
 
-  if (!filteredData.length) {
-    wrap.innerHTML = `<div class="empty-state"><div class="icon">🔍</div><p>No records match the current filters.</p></div>`;
-    pagination.style.display = 'none';
+  if (!filtered.length) {
+    tw.innerHTML = `<div class="empty"><div class="ico">🔍</div><p>Koi record nahi mila. Filters clear karo.</p></div>`;
+    pg.style.display = 'none';
     return;
   }
 
-  const start = (currentPage - 1) * PAGE_SIZE;
-  const pageData = filteredData.slice(start, start + PAGE_SIZE);
-  const totalPages = Math.ceil(filteredData.length / PAGE_SIZE);
-
-  let html = `<table><thead><tr>`;
-  COLS.forEach((c, i) => {
-    const cls = sortCol === i ? 'sorted' : '';
-    const icon = sortCol === i ? (sortAsc ? '▲' : '▼') : '⇅';
-    html += `<th class="${cls}" onclick="sortBy(${i})"> ${c.label} <span class="sort-icon">${icon}</span></th>`;
+  // Sort
+  const key = COLS[sortIdx].k;
+  const fd = [...filtered].sort((a,b) => {
+    let av=(a[key]||'').toString().toLowerCase(), bv=(b[key]||'').toString().toLowerCase();
+    const an=parseFloat(av), bn=parseFloat(bv);
+    if (!isNaN(an)&&!isNaN(bn)) return sortAsc?an-bn:bn-an;
+    return sortAsc?av.localeCompare(bv):bv.localeCompare(av);
   });
-  html += `</tr></thead><tbody>`;
 
-  pageData.forEach(row => {
-    html += '<tr>';
-    COLS.forEach(c => {
-      let val = (row[c.key] || '').toString();
-      if (c.key === '_client') {
-        html += `<td><span class="client-chip">${val}</span></td>`;
-      } else if (c.key === 'Status') {
-        const cls = val.toLowerCase() === 'closed' ? 'closed' : val.toLowerCase() === 'open' ? 'open' : 'default';
-        html += `<td><span class="badge ${cls}">${val || '—'}</span></td>`;
-      } else if (c.key === 'Status ') {
-        const cls = val.toLowerCase().includes('match') ? 'sla-match' : val.toLowerCase().includes('breach') ? 'sla-breach' : val.toLowerCase().includes('pending') ? 'pending' : 'default';
-        html += `<td><span class="badge ${cls}">${val || '—'}</span></td>`;
-      } else if (c.key === 'Ageing') {
-        const a = parseFloat(val || '0');
-        const color = a === 0 ? 'var(--green)' : a <= 2 ? 'var(--blue)' : a <= 5 ? 'var(--yellow)' : 'var(--red)';
-        html += `<td style="color:${color};font-weight:600;font-family:'JetBrains Mono',monospace">${val}</td>`;
+  const start=(page-1)*PG;
+  const pageD=fd.slice(start,start+PG);
+  const totP=Math.ceil(fd.length/PG);
+
+  let h=`<table><thead><tr>`;
+  COLS.forEach((c,i)=>{
+    const cls=sortIdx===i?'srt':'';
+    const ico=sortIdx===i?(sortAsc?'▲':'▼'):'⇅';
+    h+=`<th class="${cls}" onclick="doSort(${i})">${c.l} <span style="opacity:.5;font-size:9px">${ico}</span></th>`;
+  });
+  h+=`</tr></thead><tbody>`;
+
+  pageD.forEach(row=>{
+    h+='<tr>';
+    COLS.forEach(c=>{
+      const val=String(row[c.k]||'');
+      if(c.k==='_c'){
+        h+=`<td><span class="chip">${val}</span></td>`;
+      } else if(c.k==='Status'){
+        const cls=val.toLowerCase()==='closed'?'b-cl':val.toLowerCase()==='open'?'b-op':'b-df';
+        h+=`<td><span class="badge ${cls}">${val||'—'}</span></td>`;
+      } else if(c.k==='Status '){
+        const v=val.trim().toLowerCase();
+        const cls=v.includes('match')?'b-sm':v.includes('breach')?'b-sb':v.includes('pending')?'b-pd':'b-df';
+        h+=`<td><span class="badge ${cls}">${val||'—'}</span></td>`;
+      } else if(c.k==='Ageing'){
+        const a=parseFloat(val||0);
+        const clr=a===0?'var(--gr)':a<=2?'var(--bl)':a<=5?'var(--yw)':'var(--rd)';
+        h+=`<td style="color:${clr};font-weight:600;font-family:'JetBrains Mono',monospace">${val||'0'}</td>`;
       } else {
-        html += `<td>${val || '—'}</td>`;
+        h+=`<td>${val||'—'}</td>`;
       }
     });
-    html += '</tr>';
+    h+='</tr>';
   });
-
-  html += '</tbody></table>';
-  wrap.innerHTML = html;
+  h+='</tbody></table>';
+  tw.innerHTML=h;
 
   // Pagination
-  pagination.style.display = 'flex';
-  let pHtml = `<button class="page-btn" onclick="goPage(${currentPage-1})" ${currentPage===1?'disabled':''}>‹ Prev</button>`;
-  const maxBtn = 7;
-  let startP = Math.max(1, currentPage - 3);
-  let endP = Math.min(totalPages, startP + maxBtn - 1);
-  if (endP - startP < maxBtn - 1) startP = Math.max(1, endP - maxBtn + 1);
-  for (let p = startP; p <= endP; p++) {
-    pHtml += `<button class="page-btn ${p===currentPage?'active':''}" onclick="goPage(${p})">${p}</button>`;
-  }
-  pHtml += `<button class="page-btn" onclick="goPage(${currentPage+1})" ${currentPage===totalPages?'disabled':''}>Next ›</button>`;
-  pHtml += `<span class="page-info">Page ${currentPage} of ${totalPages} · ${filteredData.length.toLocaleString()} rows</span>`;
-  pagination.innerHTML = pHtml;
+  pg.style.display='flex';
+  let ph=`<button class="pbtn" onclick="goP(${page-1})" ${page===1?'disabled':''}>‹</button>`;
+  let s=Math.max(1,page-3), e=Math.min(totP,s+6);
+  if(e-s<6)s=Math.max(1,e-6);
+  for(let p=s;p<=e;p++) ph+=`<button class="pbtn ${p===page?'act':''}" onclick="goP(${p})">${p}</button>`;
+  ph+=`<button class="pbtn" onclick="goP(${page+1})" ${page===totP?'disabled':''}>›</button>`;
+  ph+=`<span class="pinfo">Page ${page}/${totP} · ${filtered.length.toLocaleString()} rows</span>`;
+  pg.innerHTML=ph;
 }
 
-function goPage(p) {
-  const total = Math.ceil(filteredData.length / PAGE_SIZE);
-  if (p < 1 || p > total) return;
-  currentPage = p;
+function goP(p){
+  const tot=Math.ceil(filtered.length/PG);
+  if(p<1||p>tot)return;
+  page=p;
   renderTable();
-  document.getElementById('tableWrap').scrollTop = 0;
+  document.getElementById('twrap').scrollTop=0;
 }
 
-function sortBy(colIdx) {
-  if (sortCol === colIdx) sortAsc = !sortAsc;
-  else { sortCol = colIdx; sortAsc = true; }
-  const key = COLS[colIdx].key;
-  filteredData.sort((a, b) => {
-    let av = (a[key] || '').toString().toLowerCase();
-    let bv = (b[key] || '').toString().toLowerCase();
-    const an = parseFloat(av), bn = parseFloat(bv);
-    if (!isNaN(an) && !isNaN(bn)) return sortAsc ? an - bn : bn - an;
-    return sortAsc ? av.localeCompare(bv) : bv.localeCompare(av);
-  });
-  currentPage = 1;
+function doSort(i){
+  if(sortIdx===i) sortAsc=!sortAsc; else{sortIdx=i;sortAsc=true;}
   renderTable();
 }
 
-// ========================
-// EXPORT CSV
-// ========================
-function exportCSV() {
-  const headers = COLS.map(c => c.label).join(',');
-  const rows = filteredData.map(row =>
-    COLS.map(c => `"${(row[c.key] || '').toString().replace(/"/g,'""')}"`).join(',')
-  );
-  const csv = [headers, ...rows].join('\n');
-  const blob = new Blob([csv], { type: 'text/csv' });
-  const a = document.createElement('a');
-  a.href = URL.createObjectURL(blob);
-  a.download = `b2c_returns_${new Date().toISOString().slice(0,10)}.csv`;
+// ── EXPORT ──
+function exportCSV(){
+  const h=COLS.map(c=>c.l).join(',');
+  const rows=filtered.map(r=>COLS.map(c=>`"${(r[c.k]||'').toString().replace(/"/g,'""')}"`).join(','));
+  const blob=new Blob([[h,...rows].join('\n')],{type:'text/csv'});
+  const a=document.createElement('a');
+  a.href=URL.createObjectURL(blob);
+  a.download=`b2c_returns_${new Date().toISOString().slice(0,10)}.csv`;
   a.click();
 }
 
-// ========================
-// INIT
-// ========================
-initSources();
-// Auto-fetch if sources exist
-if (sheetSources.length) {
-  fetchAllSheets();
-}
+// ── INIT ──
+initSrc();
+if(sources.length) fetchAll();
 </script>
 </body>
 </html>
