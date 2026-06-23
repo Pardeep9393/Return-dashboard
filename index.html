@@ -437,6 +437,8 @@ function applyF() {
 
   document.getElementById('rcnt').textContent = filtered.length.toLocaleString() + ' records';
   page = 1;
+  updateKPI(filtered);
+  updateCharts(filtered);
   renderTable();
 }
 
