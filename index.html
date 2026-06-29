@@ -208,9 +208,21 @@ const PG = 100;
 const CLRS = ['#f97316','#3b82f6','#22c55e','#a855f7','#eab308','#ef4444','#06b6d4','#ec4899','#84cc16','#f59e0b'];
 let allData=[],filtered=[],page=1,sortIdx=0,sortAsc=true,sources=[];
 
+const DEFAULT_SOURCES=[
+  {id:'1E9EHvu7Mli_YuronH0lJfym0o0vD-xo-98Z9mIx9C0M',lbl:'Cure&care'},
+  {id:'1ZcxxO5Eq4lcDNrFeQCfy-fn4BLY9UW5O93cU0MGwMeY',lbl:'Pilgrim'},
+  {id:'1uUg5ZT1aRUgzC-xSMhKTbeBc7YOd7IgjM_W2DOU0gHQ',lbl:'AceFour'},
+  {id:'1EJaVPfoOhnPYDH8hK0I7Vp96cnUjZT7RGSpUDnt_Uyk',lbl:'H&H'},
+  {id:'166y-O04pbLBMtVFRhqtbLnv3Jmg2thTsPpz46CdCuHU',lbl:'Hervolab'},
+  {id:'1YOZFXazT-SvBuZes3c8BUEnK4xLzT_-yxtHnPUxF5Tg',lbl:'KRIEYA BEAUTIY'},
+  {id:'1iNNO6T-2NOTEEtX6cSk0eINAFf-5uRiVBWpai6nyeDc',lbl:'ASAI'},
+  {id:'1vM7v8CZJ79W3e-5BY1jY6T2X6iU44bpBXtT-RN27hIk',lbl:'RakFitnes'},
+  {id:'1kx1Nn4c1auSwTVFSe4aEI_npeoCU7CbEI01IG6fPLfs',lbl:'TSS'},
+  {id:'1fV4F6fRvC_N8bROB6SDe30posJODIHnSlDwo7OZmdck',lbl:'UNBOTTLE(TUCO)'},
+  {id:'1uzfxLXOGevBN-fGcnMuuCxP5bHZ6jrqR4QRtDfAXNfo',lbl:'BrightRoots'}
+];
 function initSrc(){
-  const s=localStorage.getItem('b2c_v3');
-  sources=s?JSON.parse(s):[{id:'1E9EHvu7Mli_YuronH0lJfym0o0vD-xo-98Z9mIx9C0M',lbl:'Client 1'}];
+  sources=DEFAULT_SOURCES.map(s=>({...s}));
   renderSrc();
   document.getElementById('srcCount').textContent=`(${sources.length})`;
 }
@@ -227,7 +239,7 @@ function renderSrc(){
 function addRow(){sources.push({id:'',lbl:''});renderSrc();}
 function delRow(i){sources.splice(i,1);renderSrc();}
 function toggleCfg(){const b=document.getElementById('cfgBody');b.style.display=b.style.display==='none'?'block':'none';}
-function saveLoad(){sources=sources.filter(s=>s.id.trim());localStorage.setItem('b2c_v3',JSON.stringify(sources));document.getElementById('srcCount').textContent=`(${sources.length})`;renderSrc();fetchAll();}
+function saveLoad(){sources=sources.filter(s=>s.id.trim());document.getElementById('srcCount').textContent=`(${sources.length})`;renderSrc();fetchAll();}
 
 async function detectTab(id){
   for(const tab of KNOWN_TABS){
